@@ -1,16 +1,39 @@
-const express = require('express');
 const fs = require('fs')
 const Nodehun = require('nodehun')
 
 
-const affix = fs.readFileSync('../server/nodehun/dictionaries/uk/index.aff')
-const dictionary = fs.readFileSync('../server/nodehun/dictionaries/uk/index.dic')
-
-const nodehun = new Nodehun(affix, dictionary)
-example()
 
 
-async function example() {
-	const suggestions = await nodehun.suggest('будино')
-  console.log(suggestions)
+const enAffix = fs.readFileSync('../server/nodehun/dictionaries/en/index.aff')
+const enDictionary = fs.readFileSync('../server/nodehun/dictionaries/en/index.dic')
+const enNodehun = new Nodehun(enAffix, enDictionary)
+
+const ukAffix = fs.readFileSync('../server/nodehun/dictionaries/uk/index.aff')
+const ukDictionary = fs.readFileSync('../server/nodehun/dictionaries/uk/index.dic')
+const ukNodehun = new Nodehun(ukAffix, ukDictionary)
+
+
+async function enSuggestions(word) {
+  try {
+    const suggestions = await enNodehun.suggest(word);
+    console.log(suggestions);
+  } catch (error) {
+    console.error('Error suggesting English word:', error);
+  }
+}
+
+async function ukSuggestions(word) {
+  try {
+    const suggestions = await ukNodehun.suggest(word);
+    console.log(suggestions);
+  } catch (error) {
+    console.error('Error suggesting Ukrainian word:', error);
+  }
+}
+
+
+
+module.exports = {
+  enSuggestions,
+  ukSuggestions,
 }
