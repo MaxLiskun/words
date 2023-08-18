@@ -16,7 +16,8 @@ const ukNodehun = new Nodehun(ukAffix, ukDictionary)
 async function enSuggestions(word) {
   try {
     const suggestions = await enNodehun.suggest(word);
-    console.log(suggestions);
+  //  console.log(suggestions);
+  return suggestions;
   } catch (error) {
     console.error('Error suggesting English word:', error);
   }
@@ -25,7 +26,8 @@ async function enSuggestions(word) {
 async function ukSuggestions(word) {
   try {
     const suggestions = await ukNodehun.suggest(word);
-    console.log(suggestions);
+   // console.log(suggestions);
+   return suggestions
   } catch (error) {
     console.error('Error suggesting Ukrainian word:', error);
   }

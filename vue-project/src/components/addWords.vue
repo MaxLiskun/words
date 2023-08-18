@@ -164,6 +164,7 @@ export default {
         getEnSuggestion(){
             return this.$store.getters['getEnSuggestion']
         },
+
         connect() {
       socket.connect();
     },
@@ -204,8 +205,8 @@ export default {
            // this.$store.dispatch('checkWord', newValue)
            
             socket.emit('someMessage', newValue)
-            socket.on('chat message', (msg)=>{
-                console.log(msg)
+            socket.on('enSuggestions', (enSuggestions)=>{
+                console.log(enSuggestions)
             })
 
 
