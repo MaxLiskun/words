@@ -4,7 +4,8 @@ const router = express.Router();
 
 const audioController = require("../controllers/audioController")
 
-router.post('/save-audio', audioController.saveAudio);  
+router.post('/getLongBinaryAudio', audioController.getLongBinaryAudio);  
+router.post('/getShortBinaryAudio', audioController.getShortBinaryAudio);  
 router.get('/get-audio/:filename', audioController.getAudioPath)
 
 

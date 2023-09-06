@@ -51,7 +51,7 @@
 
        
       
-        <button @click="playSome">Play Some</button>
+        <button @click="playThis(inEnglish, 'en')">Play Some</button>
 
         <div>
        <audio controls :src="audioUrl"></audio>
@@ -73,6 +73,7 @@ import axios from "axios";
 import { socket } from "../socket"
 import keys from "../keys";
 
+import {playAudio} from '../store/modules/helpers'
 //import io from 'socket.io-client';
 
 
@@ -103,13 +104,6 @@ export default {
     },
    
 
-
-//     created() {
-//     // Подключение к серверу через сокет
-//     this.socket = io('http://localhost:3001');
-
-    
-//   },
 
     methods: {
 
@@ -161,67 +155,16 @@ export default {
 
         },
      
-      
-      
-        async playAudio(data) {
-
-            try {
-                //сохраняем аудио
-                const saveAudio = await axios.post(`${keys.host}/api/audio/save-audio`, { data: data });
-                const saveAudioFileName = saveAudio.data.fileName
-                console.log(saveAudioFileName)
-
-
-                const respon = await axios.get(`${keys.host}/api/audio/get-audio/${saveAudioFileName}`, {
-                    responseType: 'blob' // Указываем, что ожидаем получить двоичные данные (blob)
-                });
-
-                
-                const blob = respon.data;
-                const audio = new Audio(URL.createObjectURL(blob));
-                 await audio.play()
-               
-               
-            } catch (error) {
-                console.error('Error playing audio:', error);
-            }
+        playThis(data, language){
+            playAudio(data, language)
         },
+      
+ 
 
-        async playSome() {
-        const data = this.inEnglish
-
-             try {
-        const saveAudioResponse = await axios.post(`${keys.host}/api/audio/save-audio`, {data});
-console.log(saveAudioResponse.data.binaryAudio.data)
-const dataFrom = saveAudioResponse.data.binaryAudio.data
-
-// Шаг 2: Преобразуйте массив в Uint8Array
-const uint8Array = new Uint8Array(dataFrom);
-console.log(uint8Array)
-
-// Шаг 3: Создайте Blob из Uint8Array
-const blobData = new Blob([uint8Array], { type: 'audio/mp3' });
-console.log(blobData)
-
-// Шаг 4: Создайте URL для Blob
-const audioUrl = URL.createObjectURL(blobData);
-console.log(audioUrl)
-const audioElement = new Audio(audioUrl);
-this.audioUrl = audioUrl
-audioElement.play();
-
-    } catch (error) {
-        console.error('Error playing audio:', error);
-    }
-},
+       
 
     },
     
-    //================================================================
-
-
-
-    //================================================================
 
 
 

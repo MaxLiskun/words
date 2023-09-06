@@ -1,3 +1,7 @@
+import axios from 'axios'
+import keys from '../../keys'
+
+
 export function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
@@ -44,3 +48,26 @@ if (/\d/.test(word.trim())) {
 
 }
 
+
+
+export async function playAudio(data, language) {
+ 
+  try {
+      const saveAudioResponse = await axios.post(`${keys.host}/api/audio/getLongBinaryAudio`,
+          {
+              data: data,
+              language: language,//uk,en,ru
+          })
+      const dataFrom = saveAudioResponse.data.binaryAudio.data
+      // Шаг 2: Преобразуйте массив в Uint8Array
+      const uint8Array = new Uint8Array(dataFrom);
+      // Шаг 3: Создайте Blob из Uint8Array
+      const blobData = new Blob([uint8Array], { type: 'audio/mp3' });
+      // Шаг 4: Создайте URL для Blob
+      const audioUrl = URL.createObjectURL(blobData);
+      const audioElement = new Audio(audioUrl);
+      audioElement.play();
+  } catch (error) {
+      console.log('Помилка програвання аудіо', error);
+  }
+}

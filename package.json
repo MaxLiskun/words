@@ -13,7 +13,6 @@
   "license": "ISC",
   "dependencies": {
     "@translate-tools/core": "^1.0.0",
-    "axios": "^1.5.0",
     "bcrypt": "^5.1.0",
     "concurrently": "^8.0.1",
     "cors": "^2.8.5",

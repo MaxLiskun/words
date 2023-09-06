@@ -87,3 +87,4 @@ const check = spell.check('houe, dog, mother')
 
 
 
+
