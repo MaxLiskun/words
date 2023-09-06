@@ -16,9 +16,8 @@ function initializeSocket(server) {
     console.log('socket io)) user is connected');
 
             socket.on('someMessage', async (msg) => {
-            
             const suggestions  = await enSuggestions(msg)
-            io.emit('enSuggestions', suggestions);
+            io.emit('enSuggestions', suggestions); //
             });
   });
 }

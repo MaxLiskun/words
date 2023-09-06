@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@translate-tools/core": "^1.0.0",
     "axios": "^1.4.0",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",

@@ -30,11 +30,18 @@
 
         <div class="words-container">
 
-            <input type="text" placeholder="inEnglish" v-model="inEnglish" >
-                    <div class="englishSuggestions" v-for="suggestion in getEnSuggestion">
-                    <span>{{ suggestion }}</span>
+            <input type="text" placeholder="inEnglish" v-model="inEnglish" > 
+
+         
+                  
+            <div class="englishSuggestions" v-for="suggestion in enSuggestions">
+                    <span @click="clickEnSuggestion(suggestion)">{{ suggestion }}</span>
                     </div>
-            <input type="text" placeholder="InUkrainian" v-model="inUkrainian">
+            
+            
+                    <input type="text" placeholder="InUkrainian" v-model="inUkrainian">
+
+
             <input type="text" placeholder="InTranscription" v-model="inTranscription"><br>
             {{ getWordsMessage }}{{ errorMessage }}
             <button @click="sendData(inEnglish, inUkrainian, inTranscription)">Зберегти</button>
@@ -42,7 +49,13 @@
 
         </div>
 
+       
+      
+        <button @click="playSome">Play Some</button>
 
+        <div>
+       <audio controls :src="audioUrl"></audio>
+            </div>
 
 
     </div>
@@ -52,11 +65,14 @@
 </template>
 
 <script>
+import { GoogleTTS } from '@translate-tools/core/tts/GoogleTTS';
 import { RouterLink, RouterView } from 'vue-router'
 import categoryList from '../components/categoryList.vue'
 import { checkWord } from '../store/modules/helpers'
-
+import axios from "axios";
 import { socket } from "../socket"
+import keys from "../keys";
+
 //import io from 'socket.io-client';
 
 
@@ -79,6 +95,10 @@ export default {
 
             URL: '',
             socket: null,
+
+
+            enSuggestions: [],
+            audioUrl: '', // Update the URL accordingly
         }
     },
    
@@ -133,16 +153,76 @@ export default {
             }
 
         },
-        
-       
 
+        clickEnSuggestion(word){
+            console.log(word)
+            this.inEnglish = word
+            this.enSuggestions = []
+
+        },
      
-    
+      
+      
+        async playAudio(data) {
 
-        
+            try {
+                //сохраняем аудио
+                const saveAudio = await axios.post(`${keys.host}/api/audio/save-audio`, { data: data });
+                const saveAudioFileName = saveAudio.data.fileName
+                console.log(saveAudioFileName)
+
+
+                const respon = await axios.get(`${keys.host}/api/audio/get-audio/${saveAudioFileName}`, {
+                    responseType: 'blob' // Указываем, что ожидаем получить двоичные данные (blob)
+                });
+
+                
+                const blob = respon.data;
+                const audio = new Audio(URL.createObjectURL(blob));
+                 await audio.play()
+               
+               
+            } catch (error) {
+                console.error('Error playing audio:', error);
+            }
+        },
+
+        async playSome() {
+        const data = this.inEnglish
+
+             try {
+        const saveAudioResponse = await axios.post(`${keys.host}/api/audio/save-audio`, {data});
+console.log(saveAudioResponse.data.binaryAudio.data)
+const dataFrom = saveAudioResponse.data.binaryAudio.data
+
+// Шаг 2: Преобразуйте массив в Uint8Array
+const uint8Array = new Uint8Array(dataFrom);
+console.log(uint8Array)
+
+// Шаг 3: Создайте Blob из Uint8Array
+const blobData = new Blob([uint8Array], { type: 'audio/mp3' });
+console.log(blobData)
+
+// Шаг 4: Создайте URL для Blob
+const audioUrl = URL.createObjectURL(blobData);
+console.log(audioUrl)
+const audioElement = new Audio(audioUrl);
+this.audioUrl = audioUrl
+audioElement.play();
+
+    } catch (error) {
+        console.error('Error playing audio:', error);
+    }
+},
 
     },
- 
+    
+    //================================================================
+
+
+
+    //================================================================
+
 
 
 
@@ -168,7 +248,7 @@ export default {
         connect() {
       socket.connect();
     },
-
+    
 
     
 
@@ -204,15 +284,20 @@ export default {
             console.log('Слово валідне', newValue)
            // this.$store.dispatch('checkWord', newValue)
            
-            socket.emit('someMessage', newValue)
+            socket.emit('someMessage', newValue)// визиваем функцию someMessage
             socket.on('enSuggestions', (enSuggestions)=>{
                 console.log(enSuggestions)
+                this.enSuggestions = enSuggestions
+        
             })
 
-
+            //this.playAudio(this.inEnglish)
     
          }else{
             console.log('Слово не валідне')
+       
+     
+
          }
           
         }
