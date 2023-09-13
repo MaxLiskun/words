@@ -35,7 +35,11 @@
                     <input type="text" placeholder="inEnglish" v-model="inEnglish" > 
                     <span class="checked-fill" v-if="enIsValidField && inEnglish.length"> <span class="material-symbols-outlined">check_circle</span></span>
                     <span class="cancel-fill" v-if="enIsValidField === false && inEnglish.length"> <span class="material-symbols-outlined">cancel</span></span>   
-                    <span class="play-audio-button material-symbols-outlined" @click="playThis(inEnglish, 'en')">volume_up</span>  
+                    
+                    <span class="play-audio-button material-symbols-outlined" 
+                    :class="{ 'play-animation': isPlayingNow }"
+                    @click="playThis(inEnglish, 'en')">volume_up</span>  
+                    
                     <div class="enIsValidMessage">{{ enIsValidMessage }}</div> <br>
 
                    
@@ -113,7 +117,7 @@ export default {
             suggestions: [],
 
             
-            isPlayingNow: false,
+            isPlayingNow: null,
 
 
             enSuggestions: [],
@@ -172,11 +176,11 @@ export default {
         },
      
    async  playThis(data, language){
+      
     try {
-    this.isPlayingNow === true    
+    this.isPlayingNow = true  
     await playLongAudio(data, language);
-    console.log('Аудио завершилось');
-    this.isPlayingNow === false  
+    this.isPlayingNow   = false
   } catch (error) {
     console.error('Ошибка воспроизведения аудио:', error);
   }

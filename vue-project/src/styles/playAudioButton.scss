@@ -22,11 +22,11 @@ position: absolute;
 height: 100%;
 width: 100%;
 z-index: -2;
+opacity: 0;
 
 
 
 
-animation-name: animation__1;
 animation-duration: 1.5s;
 animation-timing-function: ease-in-out;
 animation-iteration-count: infinite;
@@ -46,9 +46,9 @@ height: 100%;
 width: 100%;
 z-index: -1;
 left: 20%;
+opacity: 0;
 
 
-animation-name: animation__2;
 animation-duration: 1s;
 animation-timing-function: ease-in-out;
 animation-iteration-count: infinite;
@@ -60,8 +60,6 @@ animation-fill-mode: forwards;
 0%{
 
 opacity: 0;
-}50%{
-opacity: 0.5;
 }
 
 100%{
@@ -69,18 +67,11 @@ opacity: 1;
 }
 
 }
-}
-
-@keyframes animation__2 {
-0%{
- 
-opacity: 0;
-}
-
-100%{
-
-opacity: 1;
+  /* Добавляем класс для запуска анимации */
+  &.play-animation::before,
+  &.play-animation::after {
+    animation-name: animation__1;
+  }
 
 }
 
-}
