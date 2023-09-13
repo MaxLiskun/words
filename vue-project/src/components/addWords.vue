@@ -183,14 +183,7 @@ export default {
     this.isPlayingNow   = false
   } catch (error) {
     console.error('Ошибка воспроизведения аудио:', error);
-  }
-
-     
-  
-
-
-
-    
+  } 
         },
 
     },
