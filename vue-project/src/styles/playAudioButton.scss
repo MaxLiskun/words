@@ -1,0 +1,85 @@
+.play-audio-button {
+
+position: relative;
+display: block;
+cursor: pointer;
+margin: 10px;
+z-index: 100;
+
+&:hover{
+color: rgb(229, 103, 0);
+
+}
+
+&::before{
+content: '';
+border-top: 1px solid white;
+border-left: 1px solid white;
+border-right: 1.5px solid rgb(0, 0, 0);
+border-bottom: 1px solid white;
+border-radius: 50%;
+position: absolute;
+height: 100%;
+width: 100%;
+z-index: -2;
+
+
+
+animation-name: animation__1;
+animation-duration: 1.5s;
+animation-timing-function: ease-in-out;
+animation-iteration-count: infinite;
+animation-fill-mode: forwards;
+}
+
+
+&::after{
+content: '';
+border-top: 1px solid white;
+border-left: 1px solid white;
+border-right: 1.5px solid rgb(5, 5, 5);
+border-bottom: 1px solid white;
+border-radius: 50%;
+position: absolute;
+height: 100%;
+width: 100%;
+z-index: -1;
+left: 20%;
+
+
+animation-name: animation__2;
+animation-duration: 1s;
+animation-timing-function: ease-in-out;
+animation-iteration-count: infinite;
+animation-fill-mode: forwards;
+
+}
+
+@keyframes animation__1 {
+0%{
+
+opacity: 0;
+}50%{
+opacity: 0.5;
+}
+
+100%{
+opacity: 1;
+}
+
+}
+}
+
+@keyframes animation__2 {
+0%{
+ 
+opacity: 0;
+}
+
+100%{
+
+opacity: 1;
+
+}
+
+}

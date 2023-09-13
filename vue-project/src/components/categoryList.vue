@@ -10,9 +10,11 @@
             </div>
             <div class="category__header-arrow" v-if="getCategories.length" @click="toggleButton"
                 :class="{ 'active': isButtonActive }">
-                <span class="material-symbols-sharp" :class="{ 'open': isButtonActive }">
+                <span class="material-symbols-outlined" :class="{ 'open': isButtonActive }">
                     expand_more
                 </span>
+
+               
             </div>
         </div>
 
@@ -45,12 +47,15 @@
 
                 <div class="category-nav">
 
-                    <span class="material-symbols-sharp" @click="renameCategory(category)"><span
+                    <span class="material-symbols-outlined" @click="renameCategory(category)"><span
                             class="edit_note">edit_note</span></span>
 
-                    <span class="material-symbols-sharp" @click="deleteCategory(category)">
+                           
+                    <span class="material-symbols-outlined" @click="deleteCategory(category)">
                         <span class="delete_note"> delete</span>
                     </span>
+
+                    
                 </div>
             </div>
         </div>
@@ -73,7 +78,8 @@ input {
     display: block;
     position: relative;
     height: 100%;
-    max-width: 500px;
+   
+    width: 100%;
     z-index: 100%;
     overflow: hidden;
 
@@ -141,15 +147,15 @@ input {
     height: 100%;
 }
 
-.material-symbols-sharp.open {
+.material-symbols-outlined.open {
     transform: rotate(180deg);
     background-color: rgb(253, 7, 7);
 }
 
-.material-symbols-sharp {
+.material-symbols-outlined{
 
     cursor: pointer;
-    font-size: 25px;
+    font-size: 20px;
     transition: all .3s ease;
     text-align: center;
     border-radius: 3px;
