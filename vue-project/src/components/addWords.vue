@@ -30,55 +30,15 @@
 
 
 <div class="blocs-container">
+            <!-- english -->
+                <div class="en-block">
+                        <div class="en-block__container block-container">
+                                <input class="en-block__input  addWords-input" @blur="inputNotActive" @focus="inputISActive" id="en-input" type="text" required v-model="inEnglish" >
+                                <label class="en-block__label  addWords-label" for="en-input">enEnglish</label> 
+                                <span  class="en-block__decoration  addWords-decoration"></span>
+                        </div>
+                    </div>
 
-     <div class="en-block">
-             <div class="en-block__container block-container">
-                        
-                            <div class="en-block__1">
-                                <input   class="en-block__input addWords-input" @blur="inputNotActive" @focus="inputISActive" id="en-block__label" type="text" required v-model="inEnglish" >
-                                <label   for="  en-block__label addWords-label">enEnglish</label> 
-                                <span    class="en-block__decoration addWords-decoration"></span>
-                            </div>
-
-
-                            <div class="en-block__2">
-                                <span class="check-icon   material-symbols-sharp"
-                                :class="{'active': enIsValidField}"
-                                >check_circle</span
-                                >
-                                <span class="cancel-icon  material-symbols-sharp"
-                                :class="{'active': !enIsValidField && inEnglish.length}"
-                                >cancel</span>
-                            </div>
-                            
-
-                            <div class="en-block__3">
-                                <span class="play-icon   material-symbols-outlined"
-                                :class="{'play-animation': isPlayingNow}"
-                                @click="playThis(inEnglish, 'en')">volume_up</span>   
-                            </div>
-
-                            <div class="en-block__4">
-                                <div class="message">{{ enIsValidMessage }}</div>
-                            </div>
-                                  
-                            <div class="en-block__5">
-                                
-                <div class="suggestion" v-for="suggestion in enSuggestions" @click="clickEnSuggestion(suggestion)">
-                    
-                    {{ suggestion }}
-                
-                </div>
-                            </div>
-
-            </div>
-                  
-
-
-                    
-                  
-               </div>
-                  
                 <!--ukrainaian-->
                 <div class="uk-block">
                     <div class="uk-block__container block-container">
@@ -98,15 +58,40 @@
             </div>
 
 
-            <!--  -->
+            <!--button send data-->
             {{ getWordsMessage }}{{ errorMessage }}
             <button @click="sendData(inEnglish, inUkrainian, inTranscription)">Зберегти</button>
-            <!--  -->
+           
 
         </div>
 
                
                 
+            <div class="en-block__2">
+                <span class="check-icon   material-symbols-sharp"
+                :class="{'active': enIsValidField}"
+                >check_circle</span
+                >
+                <span class="cancel-icon  material-symbols-sharp"
+                :class="{'active': !enIsValidField && inEnglish.length}"
+                >cancel</span>
+            </div>
+            
+            
+            <div class="en-block__3">
+                <span class="play-icon   material-symbols-outlined"
+                     :class="{'play-animation': isPlayingNow}"
+                     @click="playThis(inEnglish, 'en')">volume_up
+                </span> 
+            </div>
+
+            <div class="en-block__4">
+                <div class="message">{{ enIsValidMessage }}</div>
+            </div>
+                  
+            <div class="en-block__5">       
+<div class="suggestion" v-for="suggestion in enSuggestions" @click="clickEnSuggestion(suggestion)">{{ suggestion }}</div>
+            </div>
                     
 
 
@@ -314,6 +299,7 @@ $cancel-icon-color: rgb(249, 22, 22);
 
 
 
+
 .english-block-container{
     //border: 1px solid black;
     display: flex;
@@ -349,80 +335,7 @@ $cancel-icon-color: rgb(249, 22, 22);
         display: block;
         }
     
-    .group{
-    position: relative;
-    width: 100%;
-    flex: 0 1 70%;
-    
-        input{
-            width: 100%;
-            display: block;
-            border: none;
-            border-bottom: 1px solid rgb(218, 209, 209);
-            padding: 0;
-        
-                    &:focus{
-                    outline: none;
-                    }
-    
-                    
-                    &:focus~label{
-                    top: -20px;
-                    transition: 0.2s ease all;
-                    opacity: 0.5;
-                    }  
-    
-                    &:focus~.bar:before{
-                        width: 50%
-                    }
-                    &:focus~.bar:after{
-                        width: 50%
-                    }
-                   
-                    &:valid ~ label{
-                        top: -20px;
-                        opacity: 0.5;
-                    } 
-                   
-        }
-    
-    label{
-    position: absolute;
-    top: -2px;
-    transition: 0.2s ease all;
-    opacity: 0.9;
-    
-    }
-    
-    .bar{
-        position: relative;
-        display: block;
-        width: 100%;
-        background-color: rgb(9, 252, 82);
-    
-            &::before{
-                content: ' ';
-                position: absolute;
-                height: 1px;
-                background-color: rgb(86, 86, 87);
-                width: 0px;
-                left: 50%;
-                bottom: 0;
-                transition: all .2s ease;
-            }
-            &::after{
-                content: ' ';
-                position: absolute;
-                background-color: rgb(86, 86, 87);
-                height: 1px;
-                right: 50%;
-                width: 0px;
-                bottom: 0;
-                transition: all .2s ease;
-            }
-     }
-    
-    }
+
     
     
     
@@ -471,7 +384,6 @@ $cancel-icon-color: rgb(249, 22, 22);
         
     } 
     
-
 
 
 
@@ -531,9 +443,6 @@ $cancel-icon-color: rgb(249, 22, 22);
             }
 }
 
-
-
-
 .addWords-decoration {
     position: relative;
     display: block;
@@ -562,8 +471,45 @@ $cancel-icon-color: rgb(249, 22, 22);
         }
 }
 
-
-
+/////
+.en-block {
+}
+.en-block__container {
+}
+.block-container {
+}
+.en-block__1 {
+}
+.en-block__input {
+}
+.addWords-input {
+}
+.en-block__decoration {
+}
+.addWords-decoration {
+}
+.en-block__2 {
+}
+.check-icon {
+}
+.material-symbols-sharp {
+}
+.cancel-icon {
+}
+.en-block__3 {
+}
+.play-icon {
+}
+.material-symbols-outlined {
+}
+.en-block__4 {
+}
+.message {
+}
+.en-block__5 {
+}
+.suggestion {
+}
 </style>
 
 
