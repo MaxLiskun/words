@@ -32,65 +32,74 @@
 <div class="blocs-container">
             <!-- english -->
                 <div class="en-block">
-                        <div class="en-block__container block-container">
-                                <input class="en-block__input  addWords-input" @blur="inputNotActive" @focus="inputISActive" id="en-input" type="text" required v-model="inEnglish" >
-                                <label class="en-block__label  addWords-label" for="en-input">enEnglish</label> 
-                                <span  class="en-block__decoration  addWords-decoration"></span>
+                    <!-- input -->
+                        <div class="en-block__input-container  input-container">
+                                <input class="en-block__input  input__1" @blur="inputNotActive" @focus="inputISActive" id="en-input" type="text" required v-model="inEnglish" >
+                                <label class="en-block__label  label__1" for="en-input">enEnglish</label> 
+                                <span  class="en-block__decoration  decoration__1"></span>
                         </div>
+                    <!--check icons  -->
+                        <div class="en-block__check-icons-container check-icons">
+                            <span class="check-icon   material-symbols-sharp"
+                            :class="{'active': enIsValidField}"
+                            >check_circle</span
+                            >
+                            <span class="cancel-icon  material-symbols-sharp"
+                            :class="{'active': !enIsValidField && inEnglish.length}"
+                            >cancel</span>
+                        </div>
+                    <!--play icon  -->
+                        <div class="en-block__play-icon-container">
+                            <span class="play-icon   material-symbols-outlined"
+                                 :class="{'play-animation': isPlayingNow}"
+                                 @click="playThis(inEnglish, 'en')">volume_up
+                            </span> 
+                        </div>
+
+
+                    <!--message -->
+
+                    <div class="en-block__message">
+                        <div class="message">{{ enIsValidMessage }}</div>
+                    </div>
+
                     </div>
 
                 <!--ukrainaian-->
                 <div class="uk-block">
-                    <div class="uk-block__container block-container">
-                        <input class="uk-block__input addWords-input" type="text" required id="uk-input" v-model="inUkrainian">
-                        <label class="uk-block__label addWords-label" for="uk-input">inUkrainian</label>
-                        <span  class="uk-block__decoration addWords-decoration"></span>
+                    <div class="uk-block__input-container input-container">
+                        <input class="uk-block__input input__1" type="text" required id="uk-input" v-model="inUkrainian">
+                        <label class="uk-block__label label__1" for="uk-input">inUkrainian</label>
+                        <span  class="uk-block__decoration decoration__1"></span>
                     </div>
                 </div>
                             
                     <!--transcription-->
-            <div class="tr-block">
-                <div class="tr-block__container block-container">
-                   <input class="tr-block__input addWords-input" type="text" required id="tr-input" v-model="inTranscription">
-                   <label class="tr-block__input addWords-label" for="tr-input">inTranscription</label>
-                   <span  class="tr-block__decoration addWords-decoration"></span>
+                <div class="tr-block">
+                    <div class="tr-block__input-container input-container">
+                    <input class="tr-block__input input__1" type="text" required id="tr-input" v-model="inTranscription">
+                    <label class="tr-block__input label__1" for="tr-input">inTranscription</label>
+                    <span  class="tr-block__decoration decoration__1"></span>
+                    </div>
                 </div>
-            </div>
 
 
             <!--button send data-->
             {{ getWordsMessage }}{{ errorMessage }}
             <button @click="sendData(inEnglish, inUkrainian, inTranscription)">Зберегти</button>
            
-
-        </div>
+ </div>
 
                
                 
-            <div class="en-block__2">
-                <span class="check-icon   material-symbols-sharp"
-                :class="{'active': enIsValidField}"
-                >check_circle</span
-                >
-                <span class="cancel-icon  material-symbols-sharp"
-                :class="{'active': !enIsValidField && inEnglish.length}"
-                >cancel</span>
-            </div>
+       
             
             
-            <div class="en-block__3">
-                <span class="play-icon   material-symbols-outlined"
-                     :class="{'play-animation': isPlayingNow}"
-                     @click="playThis(inEnglish, 'en')">volume_up
-                </span> 
-            </div>
+        
 
-            <div class="en-block__4">
-                <div class="message">{{ enIsValidMessage }}</div>
-            </div>
                   
             <div class="en-block__5">       
-<div class="suggestion" v-for="suggestion in enSuggestions" @click="clickEnSuggestion(suggestion)">{{ suggestion }}</div>
+            <div class="suggestion" v-for="suggestion in enSuggestions" @click="clickEnSuggestion(suggestion)">{{ suggestion }}</div>
             </div>
                     
 
@@ -396,7 +405,7 @@ $cancel-icon-color: rgb(249, 22, 22);
 ///////////////////////////////////////////////////////////////
 
 
-.block-container {
+.input-container {
    
     position: relative;
     padding: 25px 10px 10px 10px ;
@@ -407,7 +416,7 @@ $cancel-icon-color: rgb(249, 22, 22);
     overflow: hidden;
     margin-top: 40px;
 }
-.addWords-label{
+.label__1{
     position: absolute;
     top: 20px;
     opacity: 0.9;
@@ -415,7 +424,7 @@ $cancel-icon-color: rgb(249, 22, 22);
    
 
 }
-.addWords-input {
+.input__1 {
     width: 100%;
     display: block;
     border: none;
@@ -423,7 +432,7 @@ $cancel-icon-color: rgb(249, 22, 22);
     padding: 0;
     
 
-            &:focus ~ .addWords-label{
+            &:focus ~ .label__1{
             top: 0px;
             opacity: 0.4;
             transition: all 0.2s ease;
@@ -432,18 +441,18 @@ $cancel-icon-color: rgb(249, 22, 22);
             &:focus{
                 outline: none;
             }
-            &:valid ~ .addWords-label{
+            &:valid ~ .label__1{
                 top: 0px;
             }
-            &:focus~.addWords-decoration:before{
+            &:focus~.decoration__1:before{
                 width: 50%
             }
-            &:focus~.addWords-decoration:after{
+            &:focus~.decoration__1:after{
                 width: 50%
             }
 }
 
-.addWords-decoration {
+.decoration__1 {
     position: relative;
     display: block;
     width: 100%;
