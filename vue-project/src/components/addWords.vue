@@ -485,7 +485,7 @@ $cancel-icon-color: rgb(249, 22, 22);
 
 
 .block-container {
-
+   
     position: relative;
     padding: 25px 10px 10px 10px ;
     display: flex;
