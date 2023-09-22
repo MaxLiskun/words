@@ -29,46 +29,54 @@
 
 
 
-        <div class="blocs-container">
+<div class="blocs-container">
 
-               <div class="english-block-container">
-                    <div class="english-block-1-input">
+     <div class="en-block">
+             <div class="en-block__container block-container">
                         
-<div class="group">
-     <input class="english-block-input" @blur="inputNotActive" @focus="inputISActive" id="inEnglish-field" type="text" required v-model="inEnglish" >
-     <label for="inEnglish-field">enEnglish</label> 
-     <span class="bar"></span>
- </div>
-                        <span class="check-icon   material-symbols-sharp"
-                        :class="{'active': enIsValidField}"
-                        >check_circle</span
-                        >
-                        <span class="cancel-icon  material-symbols-sharp"
-                        :class="{'active': !enIsValidField && inEnglish.length}"
-                        >cancel</span>
+                            <div class="en-block__1">
+                                <input   class="en-block__input addWords-input" @blur="inputNotActive" @focus="inputISActive" id="en-block__label" type="text" required v-model="inEnglish" >
+                                <label   for="  en-block__label addWords-label">enEnglish</label> 
+                                <span    class="en-block__decoration addWords-decoration"></span>
+                            </div>
 
-                        <span class="play-icon   material-symbols-outlined"
-                        :class="{'play-animation': isPlayingNow}"
-                        @click="playThis(inEnglish, 'en')">volume_up</span>   
-                               
-             </div>
-                  
-                
-<div class="fuck">oliaaaaaaa</div>
 
-                    <div class="english-block-2-message">
-                        <div class="message">{{ enIsValidMessage }}</div>
-                    </div>  
-                    
-                    <div class="english-block-3-suggestion">
-                        
-                            <div class="suggestion" 
+                            <div class="en-block__2">
+                                <span class="check-icon   material-symbols-sharp"
+                                :class="{'active': enIsValidField}"
+                                >check_circle</span
+                                >
+                                <span class="cancel-icon  material-symbols-sharp"
+                                :class="{'active': !enIsValidField && inEnglish.length}"
+                                >cancel</span>
+                            </div>
                             
-                            v-for="suggestion in enSuggestions">
-                                <div @click="clickEnSuggestion(suggestion) "> {{ suggestion }}</div>
-                             </div>
-                       
-                    </div>
+
+                            <div class="en-block__3">
+                                <span class="play-icon   material-symbols-outlined"
+                                :class="{'play-animation': isPlayingNow}"
+                                @click="playThis(inEnglish, 'en')">volume_up</span>   
+                            </div>
+
+                            <div class="en-block__4">
+                                <div class="message">{{ enIsValidMessage }}</div>
+                            </div>
+                                  
+                            <div class="en-block__5">
+                                
+                <div class="suggestion" v-for="suggestion in enSuggestions" @click="clickEnSuggestion(suggestion)">
+                    
+                    {{ suggestion }}
+                
+                </div>
+                            </div>
+
+            </div>
+                  
+
+
+                    
+                  
                </div>
                   
                 <!--ukrainaian-->

@@ -7,8 +7,10 @@ import router from './router'
 import store from './store/index'
 
 
-import playAudioButton from './styles/playAudioButton.scss'
-import index from './styles/index.scss'
+import playAudioButton from './styles/playAudioButton.scss?inline'
+import index from './styles/index.scss?inline'
+
+
 
 
 

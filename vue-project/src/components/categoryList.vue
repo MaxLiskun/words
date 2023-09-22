@@ -29,8 +29,7 @@
                     <span v-else>(0)</span>
                 </div>
 
-<span class="fff"></span>
-<span class="ggggggggg"></span>
+
 
                 <span v-if="getDeleteCategoryId === category.categoryId">{{ getCategoryDeleteMessage }}</span>
 
