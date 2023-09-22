@@ -25,63 +25,84 @@
             </template>
         </categoryList>
 
+        
 
 
 
         <div class="blocs-container">
 
-            <div class="english-block">
-                <div class="english_block__input">
-                    <input type="text" placeholder="inEnglish" v-model="inEnglish" > 
-                    <span class="checked-fill" v-if="enIsValidField && inEnglish.length"> <span class="material-symbols-outlined">check_circle</span></span>
-                    <span class="cancel-fill" v-if="enIsValidField === false && inEnglish.length"> <span class="material-symbols-outlined">cancel</span></span>   
-                    
-                    <span class="play-audio-button material-symbols-outlined" 
-                    :class="{ 'play-animation': isPlayingNow }"
-                    @click="playThis(inEnglish, 'en')">volume_up</span>  
-                    
-                    <div class="enIsValidMessage">{{ enIsValidMessage }}</div> <br>
+               <div class="english-block-container">
+                    <div class="english-block-1-input">
+                        
+<div class="group">
+     <input class="english-block-input" @blur="inputNotActive" @focus="inputISActive" id="inEnglish-field" type="text" required v-model="inEnglish" >
+     <label for="inEnglish-field">enEnglish</label> 
+     <span class="bar"></span>
+ </div>
+                        <span class="check-icon   material-symbols-sharp"
+                        :class="{'active': enIsValidField}"
+                        >check_circle</span
+                        >
+                        <span class="cancel-icon  material-symbols-sharp"
+                        :class="{'active': !enIsValidField && inEnglish.length}"
+                        >cancel</span>
 
-                   
-                </div>
-            
-                <div class="suggestion-container">
-                    <div class="englishSuggestions" v-for="suggestion in enSuggestions">
-                        <span @click="clickEnSuggestion(suggestion) "> <div class="some">{{ suggestion }}</div></span>
-                     </div>
-                </div>
-            
-            
+                        <span class="play-icon   material-symbols-outlined"
+                        :class="{'play-animation': isPlayingNow}"
+                        @click="playThis(inEnglish, 'en')">volume_up</span>   
+                               
+             </div>
+                  
                 
-  
 
-             
 
-            </div>
-            
-            <div class="ukrainian-block">
-                <input type="text" placeholder="InUkrainian" v-model="inUkrainian">
-            </div>
-            
+                    <div class="english-block-2-message">
+                        <div class="message">{{ enIsValidMessage }}</div>
+                    </div>  
+                    
+                    <div class="english-block-3-suggestion">
+                        
+                            <div class="suggestion" 
                             
-
-            <div class="InTranscription-block">
-                <input type="text" placeholder="InTranscription" v-model="inTranscription">
-                {{ getWordsMessage }}{{ errorMessage }}
+                            v-for="suggestion in enSuggestions">
+                                <div @click="clickEnSuggestion(suggestion) "> {{ suggestion }}</div>
+                             </div>
+                       
+                    </div>
+               </div>
+                  
+                <!--ukrainaian-->
+                <div class="uk-block">
+                    <div class="uk-block__container block-container">
+                        <input class="uk-block__input addWords-input" type="text" required id="uk-input" v-model="inUkrainian">
+                        <label class="uk-block__label addWords-label" for="uk-input">inUkrainian</label>
+                        <span  class="uk-block__decoration addWords-decoration"></span>
+                    </div>
+                </div>
+                            
+                    <!--transcription-->
+            <div class="tr-block">
+                <div class="tr-block__container block-container">
+                   <input class="tr-block__input addWords-input" type="text" required id="tr-input" v-model="inTranscription">
+                   <label class="tr-block__input addWords-label" for="tr-input">inTranscription</label>
+                   <span  class="tr-block__decoration addWords-decoration"></span>
+                </div>
             </div>
-             
-
-                <button @click="sendData(inEnglish, inUkrainian, inTranscription)">Зберегти</button>
 
 
-            </div>
+            <!--  -->
+            {{ getWordsMessage }}{{ errorMessage }}
+            <button @click="sendData(inEnglish, inUkrainian, inTranscription)">Зберегти</button>
+            <!--  -->
 
-       
-      
+        </div>
 
-       
+               
+                
+                    
 
 
+                 
     </div>
 
       
@@ -123,6 +144,9 @@ export default {
             enSuggestions: [],
             enIsValidMessage: '',
             enIsValidField: false,
+
+
+            enInputTrigger: false,
         }
     },
    
@@ -168,23 +192,37 @@ export default {
             }
 
         },
-        clickEnSuggestion(word){
-            //console.log(word)
+        clickEnSuggestion(word) {
             this.inEnglish = word
-            this.enSuggestions = []
+           
+            //this.enSuggestions = []
+           
 
         },
-     
-   async  playThis(data, language){
-      
-    try {
-    this.isPlayingNow = true  
-    await playLongAudio(data, language);
-    this.isPlayingNow   = false
-  } catch (error) {
-    console.error('Ошибка воспроизведения аудио:', error);
-  } 
+
+        async playThis(data, language) {
+
+            try {
+                this.isPlayingNow = true
+                await playLongAudio(data, language);
+                this.isPlayingNow = false
+            } catch (error) {
+                console.error('Ошибка воспроизведения аудио:', error);
+            }
         },
+
+        inputNotActive() {
+            this.enIsValidMessage = ''
+        this.enInputTrigger = false
+     
+        setTimeout(()=>{this.enSuggestions = []},500)
+       
+        },
+
+
+        inputISActive(){
+        this.enInputTrigger = true
+        }
 
     },
     
@@ -243,6 +281,7 @@ export default {
            // console.log(newValue)
             const isValid = checkWord(newValue).isValid
             this.enIsValidField = isValid
+            console.log(this.enIsValidField)
             const isValidMessage = checkWord(newValue).message
             this.enIsValidMessage = isValidMessage
             if (isValid) {
@@ -261,58 +300,258 @@ export default {
 <style lang="scss">
 
 //@import '../../src/styles/playButton.scss';
+$check-icon-color: rgb(0, 255, 64);
+$cancel-icon-color: rgb(249, 22, 22);
 
-.suggestion-container{
 
+
+
+.english-block-container{
+    //border: 1px solid black;
     display: flex;
-    width: 100%;
-    height: 100%;
-   gap: 10px;
-flex-grow: 0;
-flex-wrap: wrap;
-   
-    margin: 5px;
-}
-.some{
-    display: block;
-    border: 1px solid black;
-    padding: 0px 7px;
-    border-radius: 4px;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+    max-width: 320px;
+    overflow: hidden;
     
+    
+    .english-block-1-input{
+       
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 25px 10px 0px 10px ;
+    
+    }
+    
+    
+        .check-icon{
+        color: $check-icon-color;
+        display: none;
+        
+        }
+        .cancel-icon{
+    
+        color:$cancel-icon-color;
+        display: none;
+        }
+        .active{
+        display: block;
+        }
+    
+    .group{
+    position: relative;
+    width: 100%;
+    flex: 0 1 70%;
+    
+        input{
+            width: 100%;
+            display: block;
+            border: none;
+            border-bottom: 1px solid rgb(218, 209, 209);
+            padding: 0;
+        
+                    &:focus{
+                    outline: none;
+                    }
+    
+                    
+                    &:focus~label{
+                    top: -20px;
+                    transition: 0.2s ease all;
+                    opacity: 0.5;
+                    }  
+    
+                    &:focus~.bar:before{
+                        width: 50%
+                    }
+                    &:focus~.bar:after{
+                        width: 50%
+                    }
+                   
+                    &:valid ~ label{
+                        top: -20px;
+                        opacity: 0.5;
+                    } 
+                   
+        }
+    
+    label{
+    position: absolute;
+    top: -2px;
+    transition: 0.2s ease all;
+    opacity: 0.9;
+    
+    }
+    
+    .bar{
+        position: relative;
+        display: block;
+        width: 100%;
+        background-color: rgb(9, 252, 82);
+    
+            &::before{
+                content: ' ';
+                position: absolute;
+                height: 1px;
+                background-color: rgb(86, 86, 87);
+                width: 0px;
+                left: 50%;
+                bottom: 0;
+                transition: all .2s ease;
+            }
+            &::after{
+                content: ' ';
+                position: absolute;
+                background-color: rgb(86, 86, 87);
+                height: 1px;
+                right: 50%;
+                width: 0px;
+                bottom: 0;
+                transition: all .2s ease;
+            }
+     }
+    
+    }
+    
+    
+    
+    
+    
+       
+    }
+    
+    .english-block-2-message{
+        display: flex;
+        
+        align-items: center;
+        width: 100%;
+        font-size: 0.5rem;
+        justify-content: flex-start;
+        padding: 0px 10px;
+        
+    }
+    
+    
+    .english-block-3-suggestion{
+    
+     
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 10px;
+        color: rgb(158, 155, 155);
+        padding: 5px 10px;
+       
+        
+        .suggestion{
+            border: 1px solid grey;
+            border-radius: 3px;
+            padding: 1px 10px;
+            box-shadow: 0px 0px 3px rgb(170, 169, 169);
+         &:hover{
+            color: rgb(1, 1, 1);
+            box-shadow: 0px 0px 3px rgb(100, 99, 99);
+            cursor: pointer;
+         }
+        }
+       
+      
+        
+        
+    } 
+    
+
+
+
+
+   
+  
+    
+
+    
+
+///////////////////////////////////////////////////////////////
+
+
+.block-container {
+
+    position: relative;
+    padding: 25px 10px 10px 10px ;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    max-width: 320px;
+    overflow: hidden;
+    margin-top: 40px;
 }
-.some:hover{
-    background-color: #f1e6e6;
-    cursor: pointer;
+.addWords-label{
+    position: absolute;
+    top: 20px;
+    opacity: 0.9;
+    transition: all .2s ease;
+   
 
 }
-.blocs-container{
+.addWords-input {
     width: 100%;
     display: block;
+    border: none;
+    border-bottom: 1px solid rgb(218, 209, 209);
+    padding: 0;
+    
+
+            &:focus ~ .addWords-label{
+            top: 0px;
+            opacity: 0.4;
+            transition: all 0.2s ease;
+            }
+
+            &:focus{
+                outline: none;
+            }
+            &:valid ~ .addWords-label{
+                top: 0px;
+            }
+            &:focus~.addWords-decoration:before{
+                width: 50%
+            }
+            &:focus~.addWords-decoration:after{
+                width: 50%
+            }
 }
 
 
-input{
-    border: 1px solid grey;
-    border-radius: 4px;
-    box-shadow: 0px 1px 5px grey;
-    min-height: 20px;
+
+
+.addWords-decoration {
+    position: relative;
+    display: block;
     width: 100%;
 
-}
-input:focus{
-    border: 2px solid #da0a0a;
-}
-.english_block__input{
-    display: flex; 
-}
-.checked-fill{
-    display: block;
-    color: rgb(54, 199, 54);
 
-}
-.cancel-fill{
-    display: block;
-    color: red;
+        &::before{
+            content: '';
+            position: absolute;
+            height: 1px;
+            background-color: rgb(86, 86, 87);
+            width: 0px;
+            left: 50%;
+            bottom: 0;
+            transition: all .2s ease;
+        }
+        &::after{
+            content: '';
+            position: absolute;
+            background-color: rgb(86, 86, 87);
+            height: 1px;
+            right: 50%;
+            width: 0px;
+            bottom: 0;
+            transition: all .2s ease;
+        }
 }
 
 

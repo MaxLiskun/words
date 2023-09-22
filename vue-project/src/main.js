@@ -8,7 +8,7 @@ import store from './store/index'
 
 
 import playAudioButton from './styles/playAudioButton.scss'
-
+import index from './styles/index.scss'
 
 
 
