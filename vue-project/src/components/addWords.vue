@@ -29,41 +29,83 @@
 
 
 
-<div class="blocs-container">
+<div class="addWords-container">
             <!-- english -->
-                <div class="en-block">
-                    <!-- input -->
-                        <div class="en-block__input-container  input-container">
-                                <input class="en-block__input  input__1" @blur="inputNotActive" @focus="inputISActive" id="en-input" type="text" required v-model="inEnglish" >
-                                <label class="en-block__label  label__1" for="en-input">enEnglish</label> 
-                                <span  class="en-block__decoration  decoration__1"></span>
-                        </div>
-                    <!--check icons  -->
-                        <div class="en-block__check-icons-container check-icons">
-                            <span class="check-icon   material-symbols-sharp"
-                            :class="{'active': enIsValidField}"
-                            >check_circle</span
-                            >
-                            <span class="cancel-icon  material-symbols-sharp"
-                            :class="{'active': !enIsValidField && inEnglish.length}"
-                            >cancel</span>
-                        </div>
-                    <!--play icon  -->
-                        <div class="en-block__play-icon-container">
-                            <span class="play-icon   material-symbols-outlined"
-                                 :class="{'play-animation': isPlayingNow}"
-                                 @click="playThis(inEnglish, 'en')">volume_up
-                            </span> 
-                        </div>
+            <div class="en-block__container">
 
 
-                    <!--message -->
+                                <!-- input -->
+                                    <div class="en-block__input-container  input-container">
+                                        <input class="en-block__input  input__1" @blur="inputNotActive" @focus="inputISActive" id="en-input" type="text" required v-model="inEnglish" >
+                                        <label class="en-block__label  label__1" for="en-input">enEnglish</label> 
+                                        <span  class="en-block__decoration  decoration__1"></span>
+                                    </div>
+                                           
+                                     
 
+                               <div class="en-block__en-nav">
+                                        <!--check icons  -->
+                                        <div class="en-nav__check-icons check-icons">
+                                            <span class="check-icon   material-symbols-sharp"
+                                            :class="{'active': enIsValidField}"
+                                            >check_circle</span
+                                            >
+                                            <span class="cancel-icon  material-symbols-sharp"
+                                            :class="{'active': !enIsValidField && inEnglish.length}"
+                                            >cancel</span>
+                                        </div>
+                        
+                                            <!--play icon  -->
+                                            <div class="en-nav__play-icon">
+                                            <span class="play-icon   material-symbols-outlined"
+                                                :class="{'play-animation': isPlayingNow}"
+                                                @click="playThis(inEnglish, 'en')">volume_up
+                                            </span> 
+                                    </div>
+                               </div>
+
+                                       
+             </div>
+   
+                  
+                    
+                    
+
+
+
+
+
+
+
+
+
+                        <!-- suggestions -->
+                        <div class="en-block__suggestions-container">       
+                            <div class="suggestion" 
+                                v-for="suggestion in enSuggestions" 
+                                @click="clickEnSuggestion(suggestion)">
+                                {{ suggestion }}
+                            </div>
+                        </div>
+                  
+                        <!--message -->
                     <div class="en-block__message">
                         <div class="message">{{ enIsValidMessage }}</div>
                     </div>
 
-                    </div>
+         
+
+
+
+
+
+
+
+
+
+
+
+
 
                 <!--ukrainaian-->
                 <div class="uk-block">
@@ -98,9 +140,7 @@
         
 
                   
-            <div class="en-block__5">       
-            <div class="suggestion" v-for="suggestion in enSuggestions" @click="clickEnSuggestion(suggestion)">{{ suggestion }}</div>
-            </div>
+            
                     
 
 
@@ -305,105 +345,12 @@ export default {
 $check-icon-color: rgb(0, 255, 64);
 $cancel-icon-color: rgb(249, 22, 22);
 
-
-
-
-
-.english-block-container{
-    //border: 1px solid black;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    box-sizing: border-box;
+.addWords-container{
+    border: 1px solid rgb(255, 254, 254);
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px grey;
     max-width: 320px;
-    overflow: hidden;
-    
-    
-    .english-block-1-input{
-       
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 25px 10px 0px 10px ;
-    
-    }
-    
-    
-        .check-icon{
-        color: $check-icon-color;
-        display: none;
-        
-        }
-        .cancel-icon{
-    
-        color:$cancel-icon-color;
-        display: none;
-        }
-        .active{
-        display: block;
-        }
-    
-
-    
-    
-    
-    
-    
-       
-    }
-    
-    .english-block-2-message{
-        display: flex;
-        
-        align-items: center;
-        width: 100%;
-        font-size: 0.5rem;
-        justify-content: flex-start;
-        padding: 0px 10px;
-        
-    }
-    
-    
-    .english-block-3-suggestion{
-    
-     
-        display: flex;
-        width: 100%;
-        flex-wrap: wrap;
-        gap: 10px;
-        color: rgb(158, 155, 155);
-        padding: 5px 10px;
-       
-        
-        .suggestion{
-            border: 1px solid grey;
-            border-radius: 3px;
-            padding: 1px 10px;
-            box-shadow: 0px 0px 3px rgb(170, 169, 169);
-         &:hover{
-            color: rgb(1, 1, 1);
-            box-shadow: 0px 0px 3px rgb(100, 99, 99);
-            cursor: pointer;
-         }
-        }
-       
-      
-        
-        
-    } 
-    
-
-
-
-   
-  
-    
-
-    
-
-///////////////////////////////////////////////////////////////
-
+}
 
 .input-container {
    
@@ -412,9 +359,9 @@ $cancel-icon-color: rgb(249, 22, 22);
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    max-width: 320px;
+    width: 100%;
     overflow: hidden;
-    margin-top: 40px;
+    
 }
 .label__1{
     position: absolute;
@@ -430,6 +377,7 @@ $cancel-icon-color: rgb(249, 22, 22);
     border: none;
     border-bottom: 1px solid rgb(218, 209, 209);
     padding: 0;
+ 
     
 
             &:focus ~ .label__1{
@@ -451,7 +399,6 @@ $cancel-icon-color: rgb(249, 22, 22);
                 width: 50%
             }
 }
-
 .decoration__1 {
     position: relative;
     display: block;
@@ -461,8 +408,8 @@ $cancel-icon-color: rgb(249, 22, 22);
         &::before{
             content: '';
             position: absolute;
-            height: 1px;
-            background-color: rgb(86, 86, 87);
+            height: 2px;
+            background-color: rgb(0, 0, 0);
             width: 0px;
             left: 50%;
             bottom: 0;
@@ -471,8 +418,8 @@ $cancel-icon-color: rgb(249, 22, 22);
         &::after{
             content: '';
             position: absolute;
-            background-color: rgb(86, 86, 87);
-            height: 1px;
+            background-color: rgb(0, 0, 0);
+            height: 2px;
             right: 50%;
             width: 0px;
             bottom: 0;
@@ -480,45 +427,75 @@ $cancel-icon-color: rgb(249, 22, 22);
         }
 }
 
-/////
-.en-block {
-}
+
+
+
 .en-block__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+ 
 }
-.block-container {
+
+
+
+
+
+.en-block__en-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+ 
+
 }
-.en-block__1 {
+
+.check-icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    
+        .check-icon{
+            color: $check-icon-color;
+            display: none;
+            }
+            .cancel-icon{
+        
+            color:$cancel-icon-color;
+            display: none;
+            }
+            .active{
+            display: block;
+            }
+   
 }
-.en-block__input {
+
+
+
+.en-block__suggestions-container {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 5px;
+    color: rgb(158, 155, 155);
+    padding: 0px 10px;
+
+        .suggestion{
+            border: 1px solid grey;
+            border-radius: 3px;
+            padding: 1px 10px;
+            box-shadow: 0px 0px 3px rgb(170, 169, 169);
+         &:hover{
+            color: rgb(1, 1, 1);
+            box-shadow: 0px 0px 3px rgb(100, 99, 99);
+            cursor: pointer;
+         }
+        }
+
 }
-.addWords-input {
-}
-.en-block__decoration {
-}
-.addWords-decoration {
-}
-.en-block__2 {
-}
-.check-icon {
-}
-.material-symbols-sharp {
-}
-.cancel-icon {
-}
-.en-block__3 {
-}
-.play-icon {
-}
-.material-symbols-outlined {
-}
-.en-block__4 {
-}
-.message {
-}
-.en-block__5 {
-}
-.suggestion {
-}
+
+
+
 </style>
 
 
