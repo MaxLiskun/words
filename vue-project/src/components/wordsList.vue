@@ -52,8 +52,8 @@
                 <div v-if="deletedWordId === word._id">слово видалене</div>
 
                 <div class="words-nav">
-                    <span class="material-symbols-sharp" @click="renameWordsMenu(word._id)">edit_note</span>
-                    <span class="material-symbols-sharp" @click="deleteWord(word._id)">delete</span>
+                    <span class="material-symbols-outlined" @click="renameWordsMenu(word._id)">edit_note</span>
+                    <span class="material-symbols-outlined" @click="deleteWord(word._id)">delete</span>
                 </div>
 
 

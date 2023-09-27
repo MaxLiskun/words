@@ -24,21 +24,50 @@ const year = currentDate.getFullYear();
 const formattedDate = `${day}.${month}.${year}`;
 return formattedDate
 }
-
+//----------------------------------------------------------------
 export function checkWord(word) {
   word = word.trim();
-  if (word === "") {
-    return { isValid: false, message: "Упс( Тут порожньо" };
-  }
+  // if (word === "") {
+  //   return { isValid: false, message: "Заповни поле" };
+  // }
+
   if (/\d/.test(word.trim())) {
-    return { isValid: false, message: "Упс( Заповни без цифр" };
+    return { isValid: false, message: "Заповни без цифр" };
   }
 
-  if (/[^a-zA-Z0-9]/.test(word)) {
-    return { isValid: false, message: "Упс( Заповни без спеціальних знаків" };
+  if (/[^a-zA-Z0-9]/.test(word.replace(/\s+/g, ""))) {
+    // ігнорує пробіли
+    return { isValid: false, message: "Некоректна мова чи присутні символи" };
   }
+
   return { isValid: true, message: "Все добре)", word: word };
 }
+//----------------------------------------------------------------
+export function checkUkrainianAndTranscriptionWord(word) {
+  const ukrainianPattern = /^[\u0410-\u044f\u0406\u0456\u0407\u0457\u0490\u0491]+$/;
+  word = word.trim();
+
+  // if (word === "") {
+  //   return { isValid: false, message: "Поле порожнє" };
+  // }
+  if (/[^а-яА-ЯҐґЄєІіЇї\s]/.test(word)) {//дозволяе пробіли і укр мову
+    return { isValid: false, message: "Некоректна мова чи присутні символи" };
+  }
+
+  if (/\d/.test(word.trim())) {
+    return { isValid: false, message: "Заповни без цифр" };
+  }
+  
+
+  if (ukrainianPattern.test(word.toUpperCase())) {
+    return { isValid: true, message: "Все добре", word: word };
+  }
+  
+ return { isValid: true, message: "Все добре", word: word };
+}
+
+//----------------------------------------------------------------
+
 
 
 
