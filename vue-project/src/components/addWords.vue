@@ -31,7 +31,7 @@
 
 <div class="addWords-container">
             <!-- english -->
-            <div class="en-block__container">
+            <div class="en-block">
 
 
                                 <!-- input -->
@@ -123,7 +123,9 @@
                     <label class="tr-block__input label__1" for="tr-input">inTranscription</label>
                     <span  class="tr-block__decoration decoration__1"></span>
                     </div>
-                </div>
+              
+    
+    </div>
 
 
             <!--button send data-->
@@ -342,7 +344,7 @@ export default {
 <style lang="scss">
 
 //@import '../../src/styles/playButton.scss';
-$check-icon-color: rgb(0, 255, 64);
+$check-icon-color: rgb(46, 222, 90);
 $cancel-icon-color: rgb(249, 22, 22);
 
 .addWords-container{
@@ -376,7 +378,7 @@ $cancel-icon-color: rgb(249, 22, 22);
     display: block;
     border: none;
     border-bottom: 1px solid rgb(218, 209, 209);
-    padding: 0;
+    padding-bottom: 5px;
  
     
 
@@ -430,7 +432,7 @@ $cancel-icon-color: rgb(249, 22, 22);
 
 
 
-.en-block__container {
+.en-block {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -481,6 +483,7 @@ $cancel-icon-color: rgb(249, 22, 22);
     padding: 0px 10px;
 
         .suggestion{
+            font-size: .8rem;
             border: 1px solid grey;
             border-radius: 3px;
             padding: 1px 10px;
@@ -490,9 +493,13 @@ $cancel-icon-color: rgb(249, 22, 22);
             box-shadow: 0px 0px 3px rgb(100, 99, 99);
             cursor: pointer;
          }
+
+         
+       
         }
 
 }
+
 
 
 
