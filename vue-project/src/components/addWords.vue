@@ -68,7 +68,7 @@
                         <!--ukrainaian-->
                         <div class="uk-block">
                             <div class="uk-block__input-container input-container">
-                                <input class="uk-block__input input__1" @blur="ukInputNotActive" @focus="ukInputISActive" type="text" required id="uk-input" v-model="inUkrainian">
+                                <input class="uk-block__input input__1"  :class="{'notValid': ukIsNotValid, 'isValid': ukIsValid}" @blur="ukInputNotActive" @focus="ukInputISActive" type="text" required id="uk-input" v-model="inUkrainian">
                                 <label class="uk-block__label label__1" for="uk-input">inUkrainian</label>
                                 <span  :class="{'active': ukIsValidField}"  class="uk-block__decoration decoration__1"></span>
                             </div>
@@ -82,7 +82,7 @@
                         <!--transcription-->
                         <div class="tr-block">
                             <div class="tr-block__input-container input-container">
-                            <input class="tr-block__input input__1" @blur="trInputNotActive" @focus="trInputISActive" type="text" required id="tr-input" v-model="inTranscription">
+                            <input class="tr-block__input input__1" :class="{'notValid': trIsNotValid, 'isValid': trIsValid}" @blur="trInputNotActive" @focus="trInputISActive" type="text" required id="tr-input" v-model="inTranscription">
                             <label class="tr-block__input label__1" for="tr-input">inTranscription</label>
                             <span :class="{'active': trIsValidField}" class="tr-block__decoration decoration__1"></span>
                             </div>
@@ -139,23 +139,33 @@ export default {
         // 
             
             isPlayingNow: null,
-        // 
+
+       //================================================================     
+        // англійський блок
             enSuggestions: [],
             enIsValidMessage: '',
             enIsValidField: false,
-        // 
+        //для добавления класа, для красной или зеленой линии 
+            enIsValid: false,
+            enIsNotValid: false,
+    
          
-        // 
+
+        //================================================================
+        // український блок
             ukIsValidMessage: '',
             ukIsValidField: false,
+        //для добавления класа, для красной или зеленой линии 
+            ukIsValid: false,
+            ukIsNotValid: false,
 
-        //
+            
+        //================================================================
             trIsValidMessage: '',
             trIsValidField: false, 
-
-        //для добавления класа, для красной или зеленой линии 
-        enIsValid: false,
-        enIsNotValid: false,
+  //для добавления класа, для красной или зеленой линии 
+            trIsValid: false,
+            trIsNotValid: false,
         }
     },
    
@@ -185,7 +195,19 @@ export default {
                             const categoryId = await category.categoryId
                             await this.$store.dispatch('sendWords', { inEnglish, inUkrainian, inTranscription, categoryId, category })
                             if (this.getWordsMessage === 'Слово додане)))') {
-                            
+                             
+                             
+                                //для того щоб пропала червона і зелена лінія
+                            this.enIsValid = false
+                            this.enIsNotValid = false
+                            this.ukIsValid = false
+                            this.ukIsNotValid = false
+                            this.trIsNotValid = false
+                            this.trIsValid = false
+                            this.ukIsValidMessage = this.enIsValidMessage = this.trIsValidMessage = ''
+
+                            //------
+
                                 setTimeout(() => (
                                     this.inEnglish = this.inUkrainian = this.inTranscription = ''), 200)
                                 await this.$store.dispatch('getCategories')
@@ -227,27 +249,50 @@ export default {
 
 
         enInputNotActive() {
-          
-                if(this.enIsValidField){
+            if (this.enIsValidField && this.inEnglish.length) {
                     this.enIsValidMessage = ''
-                     this.enIsValid = true//для того щоб залишилась зелена лінія
-                }else{
-                     this.enIsNotValid = true//для того щоб залишилась червона лінія
-                }
-
-               setTimeout(()=>{this.enSuggestions = []},500)
+                    this.enIsValid = true//для того щоб залишилась зелена лінія
+            } else if (this.inEnglish.length) {
+                   this.enIsNotValid = true//для того щоб залишилась червона лінія
+            } else if (this.inEnglish.length === 0) {
+                   //для того щоб пропала червона і зелена лінія
+                    this.enIsValid = false
+                    this.enIsNotValid = false
+                    this.enIsValidMessage = ''
+            }
+                     setTimeout(()=>{this.enSuggestions = []},500)
         },
 
      
 
         ukInputNotActive() {
+           
+          if(this.ukIsValidField && this.inUkrainian.length){
             this.ukIsValidMessage = ''
+            this.ukIsValid = true
+          }else if(this.inUkrainian.length){
+           this.ukIsNotValid = true
+          }else if(this.inUkrainian.length === 0) {
+            this.ukIsValid = false
+            this.ukIsNotValid = false
+            this.ukIsValidMessage = ''
+          }
            
         },
 
         trInputNotActive(){
-            this.trIsValidMessage = ''
-         
+
+            if(this.trIsValidField && this.inTranscription.length){
+                this.trIsValidMessage = ''
+                this.trIsValid = true
+            }else if(this.inTranscription.length){
+           this.trIsNotValid = true
+            }else if(this.inTranscription.length === 0) {
+                this.trIsValid = false
+                this.trIsNotValid = false
+                this.trIsValidMessage = ''
+            }
+           
         },
        
 
@@ -309,8 +354,8 @@ export default {
         },
 
         inEnglish(newValue) {
-        
-
+       
+     
             const isValid = checkWord(newValue).isValid
             this.enIsValidField = isValid
             const isValidMessage = checkWord(newValue).message
