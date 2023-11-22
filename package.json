@@ -29,8 +29,6 @@
     "say": "^0.16.0",
     "socket.io": "^4.7.2",
     "spell-checker": "^0.0.26",
-    "spell-checker-js": "^1.2.6",
-    "vuetify": "^3.4.2",
-    "vuex": "^4.1.0"
+    "spell-checker-js": "^1.2.6"
   }
 }
