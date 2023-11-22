@@ -7,6 +7,7 @@ import addWords from "./modules/addWords";
 import wordsList from "./modules/wordsList";
 import wordsTest from "./modules/wordsTest"
 
+
 const store = createStore({
   modules: {
     userInfo,
@@ -15,6 +16,7 @@ const store = createStore({
     addWords,
     wordsList,
     wordsTest,
+  
   },
 });
 

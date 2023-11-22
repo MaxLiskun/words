@@ -1,13 +1,16 @@
 <template>
-  <div>
+ 
+
+
+  <div class="container">
     <h1>Login</h1>
     Email: <input type="text" v-model="email"> <br><br>
     Password: <input type="password" v-model="password"> <br> <br>
     <button @click="login">УВІЙТИ</button>
     {{ errors }}
-
   </div>
 
+ 
   <RouterView />
 </template>             
 
@@ -30,7 +33,6 @@ export default {
 
   methods: {
     login() {
-
       let user = {
         email: this.email,
         password: this.password
@@ -41,7 +43,7 @@ export default {
       axios.post('http://localhost:3000/api/auth/login', user)
         .then(res => {
 
-          //console.log(res.data)
+          console.log(res.data)
           this.errors = ''
           localStorage.setItem('token', res.data.token)
           this.$router.push('./')
@@ -60,3 +62,19 @@ export default {
 
 
 </script>
+
+<style scoped lang="scss">
+
+
+
+.container{
+width: 100%;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+font-size: 24px;
+}
+
+
+</style>

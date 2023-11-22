@@ -33,7 +33,7 @@ const login= async (req, res, next) => {
   //console.log(candidate)
   if (candidate) {
     if (!bcrypt.compareSync(req.body.password, candidate.password)) {
-      return res.status(401).json({ title: "Некоректний пароль" });
+      return res.status(401).json({ title: "Некоректний пароль",  isAuthorized: false,});
     } else {
       const token = jwt.sign(
         {
@@ -48,10 +48,13 @@ const login= async (req, res, next) => {
       return res.status(200).json({
         message: "Ви успішно увійшли)",
         token: token,
+        isAuthorized: true,
       });
     }
   } else {
-    return res.status(500).json({ title: "Такого користувача не існує" });
+    return res.status(500).json({ title: "Такого користувача не існує",
+    isAuthorized: false,
+  });
   }
 };
 

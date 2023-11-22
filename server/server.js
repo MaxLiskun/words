@@ -1,6 +1,9 @@
 const express = require('express')
 const cors = require('cors')
 const app = express()
+
+
+
 const mongoose = require('mongoose')
 const path = require('path')
 const keys = require('./keys')
@@ -21,7 +24,7 @@ app.use(cors(corsOptions));
 app.use(express.json())
 
 
-const translator = require('./googleTranslator/index')
+const translator = require('./googleTranslator/index') //??
 
 
 //**socket.io**
@@ -54,10 +57,10 @@ const words = require('./routes/wordsRouts')
 const audioRouts = require('./routes/audioRouts')
 
 //localhost:3000/api/auth/login
-app.use('/api/auth', authRouts)
-app.use('/api/user',tokenExpiredMiddleware, userInfo)
+app.use('/api/auth',  authRouts)
+app.use('/api/user', tokenExpiredMiddleware, userInfo)
 app.use('/api/category', category)
-app.use('/api/words', words)
+app.use('/api/words',words)
 
 
 app.use('/api/audio', audioRouts)

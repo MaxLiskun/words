@@ -3,6 +3,7 @@ import keys from "../../keys";
 export default {
   state: {
     responseMessage: "",
+    responseStatus: null,
     addWordsSelectedCategory: null,
 
     addWordsCategoryLabel: {
@@ -17,6 +18,7 @@ export default {
   actions: {
     async sendWords(ctx, data) {
       let message = "";
+      let status = null;
 
       try {
         const newData = {
@@ -26,12 +28,28 @@ export default {
           categoryId: data.categoryId,
           categoryObj_Id: data.category._id,
         };
-        const response = await axios.post(
-          `${keys.host}/api/words/add-word`,
-          newData
+
+const token = localStorage.getItem("token");
+if (!token) {
+  throw new Error('Отсутствует токен');
+  return
+}
+
+
+
+        const response = await axios.post( `${keys.host}/api/words/add-word`, newData, {
+            headers: { 
+              token: localStorage.getItem("token"),
+              Authorization: `Bearer ${token}`
+         },
+          }
         );
+      
+        status = await response.status
         message = await response.data.message;
-        ctx.commit("makeResponseMessage", message);
+       ctx.commit("makeResponseMessage", message);
+     
+        ctx.commit('makeResponseStatus', status)
       } catch (error) {
         message = error.response.data.message;
         ctx.commit("makeResponseMessage", message);
@@ -46,6 +64,12 @@ export default {
   },
 
   mutations: {
+    makeResponseStatus(state, status){
+   
+     state.responseStatus = status
+    },
+
+
 makeEnSuggestion(state, data){
 state.suggestionsEnglish = data
 },
@@ -80,6 +104,9 @@ state.suggestionsEnglish = data
   },
 
   getters: {
+    getAddWordsResponseStatus(state){
+      return state.responseStatus;
+    },
     getMessage(state) {
       return state.responseMessage;
     },

@@ -10,6 +10,7 @@ const fs = require('fs')
 const Nodehun = require('nodehun')
 
 const addNewWord = async (req, res) => {
+  console.log(req.body)
   try {
     const sameWord = await Words.findOne({
       inEnglish: req.body.inEnglish,

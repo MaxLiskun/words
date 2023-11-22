@@ -11,6 +11,21 @@ const router = createRouter({
     },
 
     {
+      path: '/wordsList',
+      name: 'wordsList',
+      component: () => import('../pages/wordsList.vue'),
+      meta: {
+       title: 'wordList',
+      }
+     },
+
+
+
+  
+
+
+
+    {
       path: '/wordsTest',
       name: 'wordsTest',
       component: () => import('../pages/wordsTest.vue'),
@@ -23,6 +38,13 @@ const router = createRouter({
      {
       path: '/addNewData',
       name: 'addNewData',
+      beforeEnter: (to, from,next) => {
+        if(1<2){
+          next()
+        }else{
+          next('./login')
+        }
+      },
       component: () => import('../pages/addNewData.vue'),
       meta: {
        title: 'addNewData',
@@ -35,9 +57,7 @@ const router = createRouter({
     {
       path: '/signup',
       name: 'signup',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
+   
       component: () => import('../components/Signup.vue'),
       meta: {
         title: 'Signup page'

@@ -4,7 +4,7 @@ const { GoogleTTS }= require('@translate-tools/core/tts/GoogleTTS') ;
 
 // // Translate single string
 // translator
-// 	.translate('Hello world', 'en', 'de')
+// 	.translate('Hello world', 'en', 'uk')
 // 	.then((translate) => console.log('Translate result', translate));
 
 // // Translate multiple strings
@@ -16,11 +16,13 @@ const { GoogleTTS }= require('@translate-tools/core/tts/GoogleTTS') ;
 // 	)
 // 	.then((translatedTexts) => console.log('Translate result', translatedTexts));
 
- async function translateOneFromEnToUk(){
-    const trans = await translator.translate('dog', 'en', 'uk')
-    //console.log(trans)
- }
- translateOneFromEnToUk()
+
+
+//  async function translateOneFromEnToUk(){
+//    const trans = await translator.translate('dog', 'en', 'uk')
+//     console.log(trans)
+//  }
+// translateOneFromEnToUk()
 
 
  

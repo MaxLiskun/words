@@ -8,7 +8,9 @@ const googleTTS = require('google-tts-api')
 const getLongBinaryAudio = async (req, res) => {
   //long text
   try {
+   
     const data = req.body.data;
+ 
     const language = req.body.language
 
     const audioChunks = await googleTTS.getAllAudioBase64(data, {
@@ -18,6 +20,7 @@ const getLongBinaryAudio = async (req, res) => {
       timeout: 10000,
       splitPunct: ",.?",
     });
+  
     const binaryAudio = Buffer.concat(
       audioChunks.map((chunk) => Buffer.from(chunk.base64, "base64"))
     );

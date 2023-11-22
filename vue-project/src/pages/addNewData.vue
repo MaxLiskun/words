@@ -1,9 +1,9 @@
 <template>
   <div>
-
-    <addCategory />
+    
+   
     <addWords />
-    <wordsList/>
+   
    
    
   </div>
@@ -20,7 +20,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
 import addCategory from '../components/addCategory.vue'
 import addWords from '../components/addWords.vue'
-import wordsList from '../components/wordsList.vue'
+import wordsList from '../pages/wordsList.vue'
 import categoryList from '../components/categoryList.vue'
 
 
@@ -34,7 +34,10 @@ export default {
     wordsList,
     categoryList,
    
-  }
+  }, 
+
+ 
+ 
 
 
 }

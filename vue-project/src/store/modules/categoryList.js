@@ -1,5 +1,9 @@
 import axios from "axios";
 import keys from "../../keys";
+import { RouterLink, RouterView } from 'vue-router'
+
+
+
 export default {
   state: {
     categories: [],
@@ -16,20 +20,45 @@ export default {
   },
 
   actions: {
-  
-///
-    async getCategories(ctx) {
+
+    async getCategories(ctx, router) {
+     
+     try {
+    
+      const token = localStorage.getItem("token")
+
       const userInfo = await ctx.rootGetters["userInfo"];
-      const response = await axios.post(
-        `${keys.host}/api/category/get-categories`,
-        userInfo
-      )
-      await ctx.commit("updateStateCategories", response.data.categoriesWithWordCount);
+
+      const response = await axios.post( `${keys.host}/api/category/get-categories`, userInfo,{
+        headers: { 
+         token: localStorage.getItem("token"),
+         Authorization: `Bearer ${token}`
+     },
+      })
+
+    
+
+   
+       await ctx.commit("updateStateCategories", response.data.categoriesWithWordCount);
+     } catch (error) {
+      if(error.response.status === 401){
+        router.push('/login') // для перехода на логин
+        localStorage.clear();
+        this.$store.commit('clearUser');
+        
+      }
+     }
+
+
+
+
+ 
+      
+    
+    
+    
+      
     },
-
-
-
-
 
     async deleteCategory(ctx, category) {
       let message = "";
@@ -84,45 +113,31 @@ export default {
     },
   },
 
-
-
-
   mutations: {
-     
-
-
-  
     makeCategorySaveId(state, id) {
       state.categorySaveId = id;
     },
     clearCategorySaveId(state) {
       state.categorySaveId = null;
     },
-
     resetRenameCompleted(state, trueOrFalse) {
       state.renameCompleted = trueOrFalse;
     },
-
     makeRenameCategoryMessage(state, message) {
       state.renameCategoryMessage = message;
       setTimeout(() => {
         state.renameCategoryMessage = " ";
       }, 1000);
     },
-
     makeDeleteCategoryId(state, categoryId) {
       state.deleteCategoryId = categoryId;
     },
-
     makeDeleteCategoryMessage(state, message) {
       state.deleteCategoryMessage = message;
     },
-
-
     updateStateCategories(state, data) {
-      state.categories = data;
+    state.categories = data;
     },
-
     updateCategoryListSelectedCategory(state, data) {
       state.selectedCategory = data;
     },
@@ -130,9 +145,9 @@ export default {
 
   ////////////////////////
   getters: {
-  // getCategoriesLength(state){
-  //   return state.categories.length
-  // },
+   getCategoriesLength(state){
+     return state.categories.length
+   },
 
     getCategorySaveId(state) {
       return state.categorySaveId;

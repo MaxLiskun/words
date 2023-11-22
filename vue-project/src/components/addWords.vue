@@ -5,43 +5,50 @@
         <router-link class="router-link" to="/">Home</router-link> <br>
         <h3>addWords</h3>
 
-        <categoryList v-model="selectedCategory" @category-change="getCategory">
-            <template v-slot:categoryLabel>
 
-                <span v-if="getAddWordsSelectedCategory === null && getCategories.length">
-                    <span>обери категорію </span>
-                    ({{ getCategories.length }})
-                </span>
-
-                <span v-if="getCategories.length <= null">Немає категорій</span>
-
-                <div v-if="getAddWordsSelectedCategory">
-                    <span>{{ getAddWordsCategoryLabel.name }}</span>
-                    <span> ({{ getAddWordsCategoryLabel.wordCount }})</span>
-                </div>
-
-
-
-            </template>
-        </categoryList>
 
         
 
 
 
-<div class="addWords-container">
+<div class="addWords-container"  v-on:keyup.enter="sendData(inEnglish.toLowerCase(), inUkrainian.toLowerCase(), inTranscription.toLowerCase())" >
+<addCategory> </addCategory>
+
+    <categoryList v-model="selectedCategory" @category-change="getCategory" 
+    :isNotSelected="categoryIsNotSelected"  
+>
+  <template v-slot:categoryLabel>
+
+      <span v-if="getAddWordsSelectedCategory === null && getCategories.length">
+          <span>обери категорію </span>
+          ({{ getCategories.length }})
+      </span>
+
+      <span v-if="getCategories.length <= null">Немає категорій</span>
+
+      <div v-if="getAddWordsSelectedCategory">
+          <span>{{ getAddWordsCategoryLabel.name }}</span>
+          <span> ({{ getAddWordsCategoryLabel.wordCount }})</span>
+      </div>
+
+
+
+  </template>
+</categoryList>
+
+
                         <!-- english -->
                         <div class="en-block">
                                             <!-- input -->
                                                 <div class="en-block__input-container  input-container">
-                                                    <input class="en-block__input  input__1" :class="{'notValid': enIsNotValid, 'isValid': enIsValid}" @blur="enInputNotActive" @focus="enInputISActive" id="en-input" type="text" required v-model="inEnglish" >
+                                                    <input ref="enInput" class="en-block__input  input__1" :class="{'decorationIsActive': enIsValid}" @blur="enInputNotActive" @focus="enInputISActive" id="en-input" type="text" required v-model="inEnglish" >
                                                     <label class="en-block__label  label__1" for="en-input">enEnglish</label> 
                                                     <span :class="{'active': enIsValidField}"  class="en-block__decoration  decoration__1"></span>
                                                 </div>
                                                         <!--play icon  -->
                                                 <div class="en-block__play-icon">
                                                         <span class="play-icon   material-symbols-outlined"
-                                                            :class="{'play-animation': isPlayingNow}"
+                                                            :class="{'play-animation': isPlayingNow === true}"
                                                             @click="playThis(inEnglish, 'en')">volume_up
                                                         </span> 
                                                 </div>
@@ -68,7 +75,7 @@
                         <!--ukrainaian-->
                         <div class="uk-block">
                             <div class="uk-block__input-container input-container">
-                                <input class="uk-block__input input__1"  :class="{'notValid': ukIsNotValid, 'isValid': ukIsValid}" @blur="ukInputNotActive" @focus="ukInputISActive" type="text" required id="uk-input" v-model="inUkrainian">
+                                <input ref="ukInput" class="uk-block__input input__1"  :class="{'decorationIsActive': ukIsValid}" @blur="ukInputNotActive" @focus="ukInputISActive" type="text" required id="uk-input" v-model="inUkrainian">
                                 <label class="uk-block__label label__1" for="uk-input">inUkrainian</label>
                                 <span  :class="{'active': ukIsValidField}"  class="uk-block__decoration decoration__1"></span>
                             </div>
@@ -82,7 +89,7 @@
                         <!--transcription-->
                         <div class="tr-block">
                             <div class="tr-block__input-container input-container">
-                            <input class="tr-block__input input__1" :class="{'notValid': trIsNotValid, 'isValid': trIsValid}" @blur="trInputNotActive" @focus="trInputISActive" type="text" required id="tr-input" v-model="inTranscription">
+                            <input ref="trInput" class="tr-block__input input__1" :class="{'decorationIsActive': trIsValid}" @blur="trInputNotActive"  type="text" required id="tr-input" v-model="inTranscription">
                             <label class="tr-block__input label__1" for="tr-input">inTranscription</label>
                             <span :class="{'active': trIsValidField}" class="tr-block__decoration decoration__1"></span>
                             </div>
@@ -99,7 +106,11 @@
                 </div>
             
 
-              <div class="button-1" @click="sendData(inEnglish, inUkrainian, inTranscription)">Зберегти</div>
+              <div class="button-1" 
+              @click="sendData(inEnglish.toLowerCase(), inUkrainian.toLowerCase(), inTranscription.toLowerCase())"
+             
+             
+              >Зберегти</div>
            
  </div>
 
@@ -118,17 +129,21 @@ import categoryList from '../components/categoryList.vue'
 import { checkWord, checkUkrainianAndTranscriptionWord } from '../store/modules/helpers'
 import { socket } from "../socket"
 import {playLongAudio, playShortAudio} from '../store/modules/helpers'
-
+import addCategory from './addCategory.vue'
 
 
 export default {
     name: 'addWords',
     components: {
-        categoryList
+        categoryList,
+        addCategory,
     },
 
     data() {
         return {
+            categoryIsNotSelected: false,
+
+
             inEnglish: '',
             inTranscription: '',
             inUkrainian: '',
@@ -138,7 +153,7 @@ export default {
             suggestions: [],
         // 
             
-            isPlayingNow: null,
+            isPlayingNow: false,
 
        //================================================================     
         // англійський блок
@@ -166,69 +181,111 @@ export default {
   //для добавления класа, для красной или зеленой линии 
             trIsValid: false,
             trIsNotValid: false,
+
         }
     },
    
 
 
     methods: {
-
         clearEnUkTrValidMessages(){
             this.trIsValidMessage = this.ukIsValidMessage = this.ukIsValidMessage = ''
         },
-        
-
         async getCategory(category) {
             const selectCategory = await this.getCategories.find(el => el.categoryId === category.categoryId)
             await this.$store.commit('makeAddWordsSelectedCategory', selectCategory)
             await this.$store.commit('makeAddWordsCategoryLabel', selectCategory)
         },
+
         async sendData(inEnglish, inUkrainian, inTranscription) {
-              
-          
+                        const enInput = this.$refs.enInput;
+                        const ukInput = this.$refs.ukInput;
+                        const trInput = this.$refs.trInput;
 
-                const category = await this.$store.getters['getAddWordsSelectedCategory']
 
-                    if (category) {
+                        enInput.blur()
+                        ukInput.blur()
+                        trInput.blur()
 
-                        if (category.categoryId) {
-                            const categoryId = await category.categoryId
-                            await this.$store.dispatch('sendWords', { inEnglish, inUkrainian, inTranscription, categoryId, category })
-                            if (this.getWordsMessage === 'Слово додане)))') {
-                             
-                             
-                                //для того щоб пропала червона і зелена лінія
-                            this.enIsValid = false
-                            this.enIsNotValid = false
-                            this.ukIsValid = false
-                            this.ukIsNotValid = false
-                            this.trIsNotValid = false
-                            this.trIsValid = false
-                            this.ukIsValidMessage = this.enIsValidMessage = this.trIsValidMessage = ''
+            const category = await this.$store.getters['getAddWordsSelectedCategory']
 
-                            //------
+                    if (category && this.enIsValidField && this.inEnglish.length && this.ukIsValidField && this.inUkrainian.length && this.trIsValidField && this.inTranscription.length && this.trIsValidField) {
+                       
 
-                                setTimeout(() => (
-                                    this.inEnglish = this.inUkrainian = this.inTranscription = ''), 200)
-                                await this.$store.dispatch('getCategories')
-                                const selectCategory = await this.getCategories.find(el => el.categoryId === category.categoryId)
-                                await this.getCategory(selectCategory)
-                            
-                                //додае слово в wordList якщо там відкрито
-                                if (this.$store.getters['getWordListSelectedCategory']) {
-                                    this.$store.dispatch('getUserWords', this.$store.getters['getWordListSelectedCategory'])
-                                }
-                            }
-                        } else {
-                            this.errorMessage = 'Спочатку оберіть категорію'
-                            setTimeout(() => (this.errorMessage = ''), 1000)
-                            return
-                        }
+
+                                if (category.categoryId) {
+                                    const categoryId = await category.categoryId
+                                    await this.$store.dispatch('sendWords', { inEnglish, inUkrainian, inTranscription, categoryId, category })
+                                   
+                                        if (this.getAddWordsResponseStatus === 201) { 
+                                                //для того щоб пропала червона і зелена лінія
+                                                this.enIsValid = this.ukIsValid = this.trIsValid = false
+                                                this.ukIsValidMessage = this.enIsValidMessage = this.trIsValidMessage = ''
+                                                //------
+
+                                                    setTimeout(() => (this.inEnglish = this.inUkrainian = this.inTranscription = ''), 200)
+
+                                                    await this.$store.dispatch('getCategories')
+                                                    const selectCategory = await this.getCategories.find(el => el.categoryId === category.categoryId)
+                                                    await this.getCategory(selectCategory)
+                                                
+                                                    //додае слово в wordList якщо там відкрито
+                                                    if (this.$store.getters['getWordListSelectedCategory']) {
+                                                        this.$store.dispatch('getUserWords', this.$store.getters['getWordListSelectedCategory'])
+                                                    }
+                                              
+                                                    enInput.focus()
+
+                                                        }
+                                        } else {
+                                                        
+                                            this.errorMessage = 'Спочатку оберіть категорію'
+                               
+         
+
+
+                                        }
                     } else {
-                        this.errorMessage = 'Спочатку оберіть категорію'
-                        setTimeout(() => (this.errorMessage = ''), 1000)
-                        return
+                       
+
+                                if(!category){ 
+
+                                    this.categoryIsNotSelected = true
+                                    setTimeout(()=>{this.categoryIsNotSelected = false},300)
+                                    this.errorMessage = 'Спочатку оберіть категорію'
+
+                                }else if(this.getAddWordsResponseStatus === 201){
+                                    this.errorMessage = 'Таке слово уже є'
+                                    enInput.focus()
+                                }
+                                else if(this.inEnglish.length === 0){
+                                    this.errorMessage = 'Заповніть поле enEnglish'
+                                    enInput.focus()
+
+                                 }else if(this.enIsValidField === false){
+                                    enInput.focus()
+                                    this.errorMessage = 'Некоректно заповнено поле enInglish'
+                            
+                                }else if(this.inUkrainian.length === 0){
+                                    this.errorMessage = 'Заповніть поле inUkrainian'
+                                    ukInput.focus()
+                                }else if (this.ukIsValidField === false){
+                                    ukInput.focus()
+                                    this.errorMessage = 'Некоректно заповнено поле inUkrainian'
+
+                                }else if (this.inTranscription.length === 0){
+                                    this.errorMessage = 'Заповніть поле inTranscription'
+                                    trInput.focus()
+                                }else if (this.trIsValidField === false){
+                                    this.errorMessage =  'Заповніть поле inTranscription'
+                                    trInput.focus()
+                                }
+                                                        
+                         setTimeout(() => (this.errorMessage = ''), 1000)
+                             return
                     }
+
+
 
         },
 
@@ -237,6 +294,7 @@ export default {
         },
 
         async playThis(data, language) {
+        if(this.inEnglish.length > 0 && this.isPlayingNow === false){
             try {
                 this.isPlayingNow = true
                 await playLongAudio(data, language);
@@ -244,62 +302,62 @@ export default {
             } catch (error) {
                 console.error('Ошибка воспроизведения аудио:', error);
             }
+
+        }else{
+            return
+        }
+
+       
+
+
+
+          
         },
 
 
 
+//коли забераєш мишку з інпутів
         enInputNotActive() {
             if (this.enIsValidField && this.inEnglish.length) {
                     this.enIsValidMessage = ''
                     this.enIsValid = true//для того щоб залишилась зелена лінія
             } else if (this.inEnglish.length) {
-                   this.enIsNotValid = true//для того щоб залишилась червона лінія
+                   this.enIsValid = true//для того щоб залишилась червона лінія
             } else if (this.inEnglish.length === 0) {
                    //для того щоб пропала червона і зелена лінія
                     this.enIsValid = false
-                    this.enIsNotValid = false
                     this.enIsValidMessage = ''
             }
                      setTimeout(()=>{this.enSuggestions = []},500)
         },
 
-     
-
-        ukInputNotActive() {
-           
+        ukInputNotActive() { 
           if(this.ukIsValidField && this.inUkrainian.length){
             this.ukIsValidMessage = ''
             this.ukIsValid = true
           }else if(this.inUkrainian.length){
-           this.ukIsNotValid = true
+           this.ukIsValid = true
           }else if(this.inUkrainian.length === 0) {
             this.ukIsValid = false
-            this.ukIsNotValid = false
             this.ukIsValidMessage = ''
           }
            
         },
 
         trInputNotActive(){
-
             if(this.trIsValidField && this.inTranscription.length){
-                this.trIsValidMessage = ''
-                this.trIsValid = true
+                 this.trIsValidMessage = ''
+                 this.trIsValid = true
             }else if(this.inTranscription.length){
-           this.trIsNotValid = true
+                this.trIsValid = true
             }else if(this.inTranscription.length === 0) {
                 this.trIsValid = false
-                this.trIsNotValid = false
-                this.trIsValidMessage = ''
+             
+                 this.trIsValidMessage = ''
             }
            
         },
-       
-
-        
-
-
-
+ //=============================      
     },
     
 
@@ -323,6 +381,10 @@ export default {
         },
         getEnSuggestion() {
             return this.$store.getters['getEnSuggestion']
+        },
+
+        getAddWordsResponseStatus(){
+            return this.$store.getters['getAddWordsResponseStatus']
         },
 
         connect() {
@@ -355,36 +417,48 @@ export default {
 
         inEnglish(newValue) {
        
-     
+     if(this.inEnglish.trim().length>0){
             const isValid = checkWord(newValue).isValid
-            this.enIsValidField = isValid
-            const isValidMessage = checkWord(newValue).message
-         
-            if (isValid) {
-                socket.emit('someMessage', newValue)// визиваем функцию someMessage
-                socket.on('enSuggestions', (enSuggestions) => {this.enSuggestions = enSuggestions})
-            } else {
-                this.enIsValidMessage = isValidMessage
-            }
+                this.enIsValidField = isValid
+                const isValidMessage = checkWord(newValue).message
+            
+                if (isValid) {
+                    socket.emit('someMessage', newValue)// визиваем функцию someMessage
+                    socket.on('enSuggestions', (enSuggestions) => {this.enSuggestions = enSuggestions})
+                } else {
+                    this.enIsValidMessage = isValidMessage
+                }
+
+     }else{
+        this.inEnglish = ''
+     }
+          
 
 
             
           
         },
         inUkrainian(newValue) {
-
-            this.ukIsValidField = checkUkrainianAndTranscriptionWord(newValue).isValid
-          
+if(this.inUkrainian.trim().length>0){
+           this.ukIsValidField = checkUkrainianAndTranscriptionWord(newValue).isValid
             if(this.ukIsValidField === false) {
                 this.ukIsValidMessage = checkUkrainianAndTranscriptionWord(newValue).message
             }
+}else{
+    this.inUkrainian = ''
+}
+        
         },
         inTranscription(newValue) {
-
-            this.trIsValidField = checkUkrainianAndTranscriptionWord(newValue).isValid
+if(this.inTranscription.trim().length>0){
+           this.trIsValidField = checkUkrainianAndTranscriptionWord(newValue).isValid
             if(this.trIsValidField === false) {
                 this.trIsValidMessage = checkUkrainianAndTranscriptionWord(newValue).message
             }
+}else{
+    this.inTranscription = ''
+}
+          
            
         }
     }
@@ -394,6 +468,9 @@ export default {
 </script>
 
 <style lang="scss">
+.isNotSelected{
+    background-color: red;
+}
 
 //@import '../../src/styles/playButton.scss';
 $check-icon-color: rgb(46, 222, 90);
@@ -434,7 +511,7 @@ $cancel-icon-color: rgb(249, 22, 22);
     border-bottom: 1px solid rgb(218, 209, 209);
     padding-bottom: 5px;
  
-    
+   
 
             &:focus ~ .label__1{
             top: 0px;
@@ -457,18 +534,10 @@ $cancel-icon-color: rgb(249, 22, 22);
 
 
 
-            &.notValid ~.decoration__1:before{
+            &.decorationIsActive ~.decoration__1:before{
                 width: 50%
             }
-            &.notValid ~.decoration__1:after{
-                width: 50%
-            }
-
-
-            &.isValid ~.decoration__1:before{
-                width: 50%
-            }
-            &.isValid ~.decoration__1:after{
+            &.decorationIsActive ~.decoration__1:after{
                 width: 50%
             }
 
@@ -576,9 +645,11 @@ $cancel-icon-color: rgb(249, 22, 22);
     text-align: center;
 
         &:hover{
+                cursor: pointer;
                 background-color: rgb(248, 170, 24);
                 box-shadow: 0px 0px 10px rgb(222, 189, 126);
                 transition: all .5s ease;
+                
              
             }
 }

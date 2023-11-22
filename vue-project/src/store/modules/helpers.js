@@ -25,12 +25,10 @@ const formattedDate = `${day}.${month}.${year}`;
 return formattedDate
 }
 //----------------------------------------------------------------
+
 export function checkWord(word) {
   word = word.trim();
-  // if (word === "") {
-  //   return { isValid: false, message: "Заповни поле" };
-  // }
-
+ 
   if (/\d/.test(word.trim())) {
     return { isValid: false, message: "Заповни без цифр" };
   }
@@ -40,16 +38,13 @@ export function checkWord(word) {
     return { isValid: false, message: "Некоректна мова чи присутні символи" };
   }
 
-  return { isValid: true, message: "Все добре)", word: word };
+  return { isValid: true, message: '', word: word };
 }
 //----------------------------------------------------------------
 export function checkUkrainianAndTranscriptionWord(word) {
   const ukrainianPattern = /^[\u0410-\u044f\u0406\u0456\u0407\u0457\u0490\u0491]+$/;
   word = word.trim();
 
-  // if (word === "") {
-  //   return { isValid: false, message: "Поле порожнє" };
-  // }
   if (/[^а-яА-ЯҐґЄєІіЇї\s]/.test(word)) {//дозволяе пробіли і укр мову
     return { isValid: false, message: "Некоректна мова чи присутні символи" };
   }
@@ -60,20 +55,26 @@ export function checkUkrainianAndTranscriptionWord(word) {
   
 
   if (ukrainianPattern.test(word.toUpperCase())) {
-    return { isValid: true, message: "Все добре", word: word };
+    return { isValid: true, message: '', word: word };
   }
   
- return { isValid: true, message: "Все добре", word: word };
+ return { isValid: true, message: '', word: word };
 }
 
 //----------------------------------------------------------------
+export function checkCategory(category) {
+  if (/[^a-zA-Z0-9.,]/.test(category.replace(/\s+/g, ""))) {   // ігнорує пробіли
+    return {isValid: false,  message: "Заповни англійськими літерами без символів",};
+  }else
+    return { isValid: true, message: '' };
+  }
 
-
+//================================================================
 
 
 // data - ето текст для озвучки, language - 'en', 'ru', 'uk'
 export async function playLongAudio(data, language, isEnd) {
- 
+ console.log(data);
   try {
       const saveAudioResponse = await axios.post(`${keys.host}/api/audio/getLongBinaryAudio`,
           {
@@ -127,4 +128,19 @@ export async function playShortAudio(data, language) {
   } catch (error) {
       console.log('Помилка програвання аудіо', error);
   }
+}
+
+
+//================================================================
+//для великої першої букви та великої букви після крапки
+
+export function makeFirstBigLetterAndAfterPoint(data){
+const inputString = data;
+const parts = inputString.split('.'); 
+const outputStringTrim = parts.map(part => part.trim())
+const outputStringToUpperCase = outputStringTrim.map(str => str.charAt(0).toUpperCase() +  str.slice(1)) 
+const outputStringToUpperCaseWithPoint =  outputStringToUpperCase.join('. ').trim() 
+
+//console.log(outputStringToUpperCaseWithPoint);
+ return outputStringToUpperCaseWithPoint
 }

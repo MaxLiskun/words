@@ -32,8 +32,9 @@ const addCategory = async (req, res) => {
 };
 
 const getCategories = async (req, res) => {
+ 
   try {
-    const categories = await Category.find({ userId: req.body.userId });
+  const categories = await Category.find({ userId: req.body.userId });
     
 const categoryPromises = categories.map(async(category)=>{
 const wordCount = await Word.countDocuments({categoryId:category.categoryId })
