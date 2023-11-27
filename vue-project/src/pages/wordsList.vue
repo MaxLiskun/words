@@ -352,6 +352,7 @@ export default {
 <style scoped lang="scss">
 .word-container {
     width: 100%;
+ 
 
     //border: 1px solid black;
 }
@@ -372,6 +373,7 @@ box-shadow: 0px 0px 3px gray;
 border-radius: 3px;
 align-items: center;
 position: relative;
+
 		// .word-main__content
 
 		&__content {

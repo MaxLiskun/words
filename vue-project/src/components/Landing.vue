@@ -1,22 +1,9 @@
 <template>
-    <div class="landing-container">
-        
-       
-    
-     <!-- <nav class="nav-container">
-      <router-link to="/addNewData" class="router-link">addNewData</router-link>   
-      <router-link to="/wordsTest" class="router-link">wordsTest</router-link>   
-      <router-link to="/wordsList" class="router-link">wordsList</router-link>   
-     </nav>
-     -->
-    <h1>landing</h1>
-    </div>
+<h3>landing</h3>
 
-    <RouterView />
   
+ 
 </template>
-
-
 <script>
 
 import { RouterLink, RouterView } from 'vue-router'
@@ -26,7 +13,7 @@ export default{
     name: "Landing",
     data() {
             return {
-            
+            overlay: true,
             }
         },
 
@@ -50,5 +37,6 @@ export default{
 </script>
 
 <style scoped>
+
 
 </style>

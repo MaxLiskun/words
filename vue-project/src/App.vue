@@ -1,118 +1,117 @@
 <template>
-    <div class="container">
-            <header class="header">
-                <span class="menu-button"></span>
-                <headerComponent />
-            </header>
+    
+
+    <div class="wrapper">
+        <nav class="nav" v-if="isAuthorized === true" :class="{'open': isMenuOpen === true}">
+            <button  @click="openMenuTrigger">exit</button>                   
+    
+        <a class="router-link" @click="closeMenuAndNavigate('/')">landing</a>
+        <a class="router-link" @click="closeMenuAndNavigate('/addNewData')">addNewData</a>
+        <a class="router-link" @click="closeMenuAndNavigate('/wordsTest')">wordsTest</a>
+        <a class="router-link" @click="closeMenuAndNavigate('/wordsList')">wordsList</a>
+        
+        
+        
+        </nav>
+
+
+        
+    <div class="container" >
+               
+     
+
+        <header class="header" :class="{'notActive': isMenuOpen === true}">
+     
+                        <span class="menu-button" 
+                            v-if="isAuthorized === true"  
+                            @click="openMenuTrigger">
+                            MENU
+                        </span>
+                        <headerComponent />
+        </header>
+                            
+                        
+    
+        <main class="main" :class="{'notActive': isMenuOpen === true}" >
+        <RouterView />
+        </main>
+
+        <footer class="footer" :class="{'notActive': isMenuOpen === true}">
+        <h1>footer</h1>
+        </footer>
             
 
-            <main class="main">
-              
-                <nav class="nav-container" v-if=" isAuthorized === true">
-                    <div class="router-link">  <router-link to="/addNewData" >addNewData</router-link>  </div>
-                    <div class="router-link">  <router-link to="/wordsTest" >wordsTest</router-link>   </div>
-                    <div class="router-link">  <router-link to="/wordsList" >wordsList</router-link>   </div>
-                </nav>
 
-                <RouterView />
+</div>
 
-            </main>
-            
-
-
-            <footer class="footer">
-                <footerComponent />
-            </footer>
     </div>
+  
+
+
+
+
+
+  
 
 
 
 </template>
 
 <style scoped lang="scss">
-.container{
-    display: flex;
-    flex-direction: column;
-    max-width: 1024px;
-    min-height: 100vh;
-    width: 100%;
+.wrapper{
+    height: 100vh;
    
-
-            .header{
-                display: flex;
-                padding: 20px 20px;
-                height: 100%;
-                width: 100%;
-                background-color: rgb(201, 198, 198);
-                .menu-button{
-                   display: none;
-                   }
-                            @media(max-width: 767px){
-                                .menu-button{
-                               
-                                display: block;
-                              
-                                position: relative;
-                                width: 30px;
-                                border-top: 3px solid black
-                                }
-                                .menu-button::after{
-                                content: '';
-                                display: block;
-                                position: absolute;
-                                width: 100%;
-                                border-top: 3px solid black;
-                                top: 10px;
-                                }
-                                .menu-button::before{
-                                    content: '';
-                                    display: block;
-                                    position: absolute;
-                                    width: 100%;
-                                    border-top: 3px solid black;
-                                    top: -10px;
-                                    }
-                            }
-
-            }
-            .main{
-                flex: 1 1 auto;
-                height: 100%;
-                width: 100%;
-            
-               display: flex;
-              // background-color: rgb(245, 220, 187);
-                 .nav-container{
-                    padding: 5px 10px;
-                    background-color: antiquewhite;
-                    flex-direction: column;
-                    background-color: aqua;
-                    display: flex;
-                    flex-direction: column;
-                    gap:10px;
-                    
-                 }
-                 @media (max-width: 767px) {
-                    .nav-container {
-                    position: absolute;
-                    z-index: 100;
-                    top: 0;
-                    left: -100%;
-                    }
-                    }
-                
-            }
-            .footer{
-                display: flex;         
-                padding: 20px 20px;
-                height: 100%;
-                width: 100%;
-                background-color: rgb(201, 198, 198);
-
-            }
 }
 
+.container{
+display: flex;
+flex-direction: column;
+height: 100%;
+width: 100%;
+overflow: hidden;
 
+
+
+}
+.header{
+    flex: 0 1 auto;
+width: 100%;
+height: 10%;
+background-color: bisque;
+}
+
+.nav{
+position: absolute;
+top: 0;
+left: -30%;
+background-color: chocolate;
+display: flex;
+flex-direction: column;
+width: 30%;
+height: 100%;
+z-index: 999;
+transition: all 1s ease;
+
+}
+.open{
+
+
+left: 0;
+}
+
+.main{
+width: 100%;
+min-height: 100%;
+flex: 1 0 100%;
+background-color: rgb(215, 229, 194);
+
+}
+
+.footer{
+flex: 0 1 20%;
+background-color: blueviolet;
+height: 15%;
+}
 
 
 </style>
@@ -139,6 +138,7 @@ export default {
     data() {
         return {
             isAuthorized: false,
+            isMenuOpen: false,
         }
     },
 
@@ -151,7 +151,15 @@ export default {
     },
 
     methods: {
+        openMenuTrigger(){
+         this.isMenuOpen = !this.isMenuOpen
+        },
+        closeMenuAndNavigate(path){
+            this.isMenuOpen = false;
+            this.$router.push(path)
+        }
     },
+ 
 
     computed: {
         getIsAuthorized(){
