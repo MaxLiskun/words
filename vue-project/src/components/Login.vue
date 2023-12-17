@@ -1,17 +1,39 @@
 <template>
  
+<!-- 
+border rounded-xl 
+w-100 
+d-flex flex-wrap flex-column justify-center align-center ga-3
+pa-3 pa-md-4 pa-lg-8
+text-body-2 text-md-h5 text-lg-h4
+
+bg-sm-red
+
+ -->
 
 
-  <div class="container">
-    <h1>Login</h1>
-    Email: <input type="text" v-model="email"> <br><br>
-    Password: <input type="password" v-model="password"> <br> <br>
-    <button @click="login">УВІЙТИ</button>
-    {{ errors }}
-  </div>
+<div class="container">
+  <h1 style="border">Login</h1>
+  Email: <input type="text" v-model="email"> <br><br>
+  Password: <input type="password" v-model="password"> <br> <br>
+  <button @click="login">УВІЙТИ</button>
+  <router-link  class="nav-links__link-signup" to="/signup">Реєстрація</router-link>
+  {{ errors }}
+</div>
+  
+   
+  
+
+  
+
+
 
  
-  <RouterView />
+
+ 
+
+  
+  
 </template>             
 
 //-------------------------------------------------------
@@ -66,15 +88,16 @@ export default {
 <style scoped lang="scss">
 
 
-
 .container{
-width: 100%;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-font-size: 24px;
-}
+  width: 100%;
+  height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  }
+
+
 
 
 </style>

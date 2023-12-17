@@ -106,6 +106,7 @@
     background-color: rgb(232, 231, 227);
     word-break: break-all;
     border-radius: 5px;
+   
 }
 .category__header-arrow{
     margin: 0 5px;
@@ -124,7 +125,9 @@
     overflow-y: auto;
     overflow-x: hidden;
     height: 0;
-   background-color: rgb(249, 249, 243);
+    opacity: 0;
+    //overflow: hidden;
+  // background-color: rgb(249, 249, 243);
                 &::-webkit-scrollbar-track {
                     background-color: #e5e1e1; /* Цвет фона трека (полосы прокрутки) */
                 }
@@ -145,13 +148,15 @@
 
 .open {
     top: 0;
-    transition: all .2s ease-in-out;
+    opacity: 1;
+    transition: all .3s ease-in-out;
     height: 100%;
+   
 }
 
 .material-symbols-outlined.open {
     transform: rotate(180deg);
-    background-color:  rgb(255, 7, 7);
+   // background-color:  rgb(255, 7, 7);
 }
 
 .material-symbols-outlined{

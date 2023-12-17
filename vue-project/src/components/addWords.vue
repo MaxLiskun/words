@@ -1,9 +1,7 @@
 <template>
     <div class="addWords">
-        <hr>
-        <hr>
-        <router-link class="router-link" to="/">Home</router-link> <br>
-        <h3>addWords</h3>
+      
+
 
 
 
@@ -12,24 +10,24 @@
 
 
 <div class="addWords-container"  v-on:keyup.enter="sendData(inEnglish.toLowerCase(), inUkrainian.toLowerCase(), inTranscription.toLowerCase())" >
-<addCategory> </addCategory>
+<addCategory/> 
 
     <categoryList v-model="selectedCategory" @category-change="getCategory" 
     :isNotSelected="categoryIsNotSelected"  
 >
   <template v-slot:categoryLabel>
 
-      <span v-if="getAddWordsSelectedCategory === null && getCategories.length">
-          <span>обери категорію </span>
-          ({{ getCategories.length }})
-      </span>
+            <span v-if="getAddWordsSelectedCategory === null && getCategories.length">
+                <span>обери категорію </span>
+                ({{ getCategories.length }})
+            </span>
 
-      <span v-if="getCategories.length <= null">Немає категорій</span>
+            <span v-if="getCategories.length <= null">Немає категорій</span>
 
-      <div v-if="getAddWordsSelectedCategory">
-          <span>{{ getAddWordsCategoryLabel.name }}</span>
-          <span> ({{ getAddWordsCategoryLabel.wordCount }})</span>
-      </div>
+            <div v-if="getAddWordsSelectedCategory">
+                <span>{{ getAddWordsCategoryLabel.name }}</span>
+                <span> ({{ getAddWordsCategoryLabel.wordCount }})</span>
+            </div>
 
 
 
@@ -119,7 +117,7 @@
 
       
                
-    <RouterView />
+    <!-- <RouterView /> -->
 </template>
 
 <script>
@@ -467,7 +465,7 @@ if(this.inTranscription.trim().length>0){
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .isNotSelected{
     background-color: red;
 }
@@ -475,6 +473,11 @@ if(this.inTranscription.trim().length>0){
 //@import '../../src/styles/playButton.scss';
 $check-icon-color: rgb(46, 222, 90);
 $cancel-icon-color: rgb(249, 22, 22);
+
+.addWords{
+    margin: 10px;
+
+}
 
 .addWords-container{
     border: 1px solid rgb(255, 254, 254);

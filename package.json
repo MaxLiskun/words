@@ -21,6 +21,7 @@
     "google-translate-api": "^2.3.0",
     "google-tts-api": "^2.0.2",
     "jsonwebtoken": "^9.0.0",
+    "mask": "^0.2.2",
     "mongoose": "^7.1.0",
     "nodehun": "^3.0.2",
     "nodemon": "^3.0.1",

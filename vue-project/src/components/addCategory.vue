@@ -25,7 +25,7 @@
 </template>
 
 
-<style lang="scss">
+<style scoped lang="scss">
 .addCategory-container {
 display: flex;
 flex-direction: column;
