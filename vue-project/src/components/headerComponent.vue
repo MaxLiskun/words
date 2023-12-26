@@ -9,10 +9,10 @@
                      </div>
 
           
-                    <!-- <div class="nav__links"  v-if="getIsAuthorized === false">
-                        <router-link  class="nav-links__link-signup link" to="/signup">Реєстрація</router-link>
-                        <router-link  class="nav-links__link-login link" to="/login"> Увійти </router-link>
-                    </div> -->
+                    <div class="nav__links"  v-if="getIsAuthorized === false">
+                        <!-- <router-link  class="nav-links__link-signup link" to="/signup">Реєстрація</router-link>
+                        <router-link  class="nav-links__link-login link" to="/login"> Увійти </router-link> -->
+                    </div>
                 
 
                     <div class="logout"  v-if="getIsAuthorized === true"  @click="logout" >
