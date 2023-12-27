@@ -3,29 +3,29 @@
     
   <div class="container">
     <h3 >landing</h3>
-    <v-icon icon="mdi-login"></v-icon>
+
 
     
     
 
 <v-icon>mdi-user-secret</v-icon>
     
-        
+<!--         
           <v-date-picker
            
-          ></v-date-picker>
+          ></v-date-picker> -->
     
          
         
-              <v-rating
+              <!-- <v-rating
                 hover
                 :length="5"
                 :size="32"
                 :model-value="3"
                 active-color="primary"
-              />
+              /> -->
         
-              <v-slider></v-slider>
+              <!-- <v-slider></v-slider>
               <v-textarea clearable label="Label" variant="solo-filled"></v-textarea>
               <v-carousel>
                 <v-carousel-item
@@ -42,7 +42,7 @@
                   src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
                   cover
                 ></v-carousel-item>
-              </v-carousel>
+              </v-carousel> -->
         
   </div>
   

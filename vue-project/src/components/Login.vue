@@ -49,7 +49,7 @@
   </v-col>
 </v-row>
                    <!-- buttons -->
-                        <v-row>
+                        <v-row v-if="!canEnter">
                           <v-col>
                             <v-btn class="w-100  rounded-xl bg-green"
                             @click="submit"
@@ -64,21 +64,22 @@
 
 
                      <!-- loadinf -->
-                        <v-row v-if="loading">
-                          <v-col>
-                            <v-icon 
-                            class="mb-5"
-                            color="success"
-                            icon="mdi-check-circle"
-                            size="112"
-                        ></v-icon>
-
-                        <v-progress-circular
+                        <v-row align="center">
+                          <v-col align="center">
                             
-                        color="primary"
-                        indeterminate
-                        size="100"
-                    ></v-progress-circular>
+                                  <v-icon v-if="enterIcon"
+                                  class="mb-5"
+                                  color="success"
+                                  icon="mdi-check-circle"
+                                  size="112"
+                              ></v-icon>
+
+                              <v-progress-circular  v-if="enterLoader"
+                              color="primary"
+                              indeterminate
+                              size="100"
+                          ></v-progress-circular>
+
                           </v-col>
                         </v-row>
 
@@ -91,54 +92,6 @@
 
 </template>             
 
-
-<!-- <script>
-import { RouterLink, RouterView } from 'vue-router'
-import axios from 'axios';
-
-export default {
-  name: 'Login',
-  data() {
-    return {
-      email: '',
-      password: '',
-
-
-      errors: '',
-    }
-  },
-
-  methods: {
-    login() {
-      let user = {
-        email: this.email,
-        password: this.password
-      }
-
-
-
-      axios.post('http://localhost:3000/api/auth/login', user)
-        .then(res => {
-
-          console.log(res.data)
-          this.errors = ''
-          localStorage.setItem('token', res.data.token)
-          this.$router.push('./')
-          this.$store.dispatch('getInfo')
-        }).catch(err => {
-        //  console.log(err.response.data)
-          this.errors = err.response.data.title
-        })
-    }
-
-
-
-  }
-
-}
-
-
-</script> -->
 
 
 <script setup>
@@ -157,10 +110,12 @@ const userPhone = ref('380');
 const router = useRouter();
 
 //consts
-const loading = ref(false)
-const errors = ref('')
+const canEnter = ref(false);
+const enterLoader = ref(false);
+const enterIcon = ref(false)
+//
 
-//  
+const errors = ref('')
 const isValid = ref({
 isUserPhoneValid: '',
 isUserPasswordValid: '',
@@ -215,7 +170,7 @@ setTimeout(() => {
     }, 1000);
 }
 
-//965004797
+
 //functions
 const submit = async () => {
 
@@ -225,56 +180,55 @@ const submit = async () => {
               userPhone: userPhone.value,
             }
 
-  //console.log(candidate)
-
-  try {
-      const response = await axios.post('http://localhost:3000/api/auth/login', candidate);
-      console.log(response.status);
-      if(response.status === 200){
-        localStorage.setItem('token', response.data.token)
-        router.push('./')
-        store.dispatch('getInfo')
-        console.log(response);
-      }
-    } catch (error) {
-      errorMessage(error)
-      if (error.response) {
-        // Обработка ошибок с сервера
-        errorMessage(error.response.data.title)
-       
-      } else if (error.request) {
-        // Обработка ошибок запроса
-        errorMessage(error.request)
-      
-      } else {
-        // Обработка других ошибок
-        errorMessage(error.message)
-      }
-    }
+            try {
+                const response = await axios.post('http://localhost:3000/api/auth/login', candidate);
+                console.log(response.status);
+                if(response.status === 200){
+                    
+                    //
+                    canEnter.value = true
+                    enterLoader.value = true
+                   
+                    setTimeout(() => {
+                      enterLoader.value = false
+                      enterIcon.value = true
+                    }, 2000);
 
 
 
 
+                        setTimeout(() => {
+                          canEnter.value = false
+                          enterIcon.value = false
+                                localStorage.setItem('token', response.data.token)
+                                router.push('./')
+                                store.dispatch('getInfo')
+                        }, 2500);
+                        
+                    //
+                   
+                }
+              } catch (error) {
+                errorMessage(error)
+                if (error.response) {
+                  // Обработка ошибок с сервера
+                  errorMessage(error.response.data.title)
+                
+                } else if (error.request) {
+                  // Обработка ошибок запроса
+                  errorMessage(error.request)
+                
+                } else {
+                  // Обработка других ошибок
+                  errorMessage(error.message)
+                }
+              }
 
   }else{
     errorMessage('Заповніть усі поля')
     return
   }
 
-     
-
-      // axios.post('http://localhost:3000/api/auth/login', user)
-      //   .then(res => {
-
-      //     console.log(res.data)
-      //     this.errors = ''
-      //     localStorage.setItem('token', res.data.token)
-      //     this.$router.push('./')
-      //     this.$store.dispatch('getInfo')
-      //   }).catch(err => {
-      //   //  console.log(err.response.data)
-      //     this.errors = err.response.data.title
-      //   })
     }
 
 

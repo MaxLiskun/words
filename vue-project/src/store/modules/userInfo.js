@@ -5,7 +5,11 @@ export default {
   state: {
     userInfo: {
       name: "",
-      email: "",
+      lastName: "",
+      userPhone: "",
+      avatar: "",
+      motherFatherEmail: "",
+      motherFatherPhone: "",
       userId: "",
     },
 
@@ -31,13 +35,14 @@ export default {
              },
     });
           const user = candidate.data.decoded;
-         
+        // console.log(user);
           ctx.commit("makeUser", user);
           ctx.commit('setIsAuthorized', true)
 
 
         setTimeout(()=>{
           ctx.dispatch('getInfo')
+          
         },2000)
 
        
@@ -64,14 +69,24 @@ export default {
     makeUser(state, user) {
   
       state.userInfo.name = user.name;
-      state.userInfo.email = user.email;
-      state.userInfo.userId = user.userId;
-      // state.userInfo = { ...state.userInfo, ...user };
+      state.userInfo.lastName = user.lastName;
+      state.userInfo.userPhone = user.userPhone;
+      state.userInfo.avatar = user.avatar
+      state.userInfo.userId = user.userId
+
+      state.userInfo.motherFatherEmail = user.motherFatherEmail;
+      state.userInfo.motherFatherPhone = user.motherFatherPhone;
+     
     },
     clearUser(state) {
-      state.userInfo.name = "";
-      state.userInfo.email = "";
-      state.userInfo.userId = "";
+      state.userInfo.name = ''
+      state.userInfo.lastName = ''
+      state.userInfo.userPhone = ''
+      state.userInfo.avatar = ''
+      state.userInfo.userId = ''
+
+      state.userInfo.motherFatherEmail = ''
+      state.userInfo.motherFatherPhone = ''
     },
 
     setIsAuthorized(state, trueOrFalse){

@@ -3,7 +3,7 @@
         <div class="container">
 
                       <div class="user-info" v-if="getInfo.name">
-                        <div class="user-info__name">{{ getInfo.name}}</div>
+                        <div class="user-info__name">{{ getInfo.name }} {{ getInfo.lastName }} {{ getInfo.userPhone }}</div>
                         <font-awesome-icon class="user-info__icon" icon="fa-solid fa-user" size="xl"/>
                
                      </div>
@@ -14,10 +14,9 @@
                         <router-link  class="nav-links__link-login link" to="/login"> Увійти </router-link> -->
                     </div>
                 
-
+              
                     <div class="logout"  v-if="getIsAuthorized === true"  @click="logout" >
-                        <div class="logout__text">Вихід</div>
-                        <font-awesome-icon class="logout__icon" icon="fa-solid fa-arrow-right-from-bracket" size="xl" />
+                        <v-icon icon="mdi-login"></v-icon>
                     </div>
               
              
