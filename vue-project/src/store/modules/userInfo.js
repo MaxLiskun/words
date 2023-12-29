@@ -20,7 +20,7 @@ export default {
 
   },
   actions: {
-    async getInfo(ctx) {
+    async getInfo(ctx, dispatch) {
       
       try {
         const token = await localStorage.getItem('token');
@@ -38,15 +38,14 @@ export default {
         // console.log(user);
           ctx.commit("makeUser", user);
           ctx.commit('setIsAuthorized', true)
+    
 
+        // setTimeout(()=>{
+        //   ctx.dispatch('getInfo')
+        // },2000)
 
-        setTimeout(()=>{
-          ctx.dispatch('getInfo')
-          
-        },2000)
-
-       
-          
+        //ctx.dispatch('getInfo')
+          ctx.dispatch('getWordTestResults') // для визова результатов в landing
         }else{
        
           ctx.commit('setIsAuthorized', false)
@@ -59,6 +58,7 @@ export default {
         
           ctx.commit('setIsAuthorized', false)
           router.push("/login");
+          ctx.commit('clearUser')
         }
       }
     },
@@ -76,7 +76,7 @@ export default {
 
       state.userInfo.motherFatherEmail = user.motherFatherEmail;
       state.userInfo.motherFatherPhone = user.motherFatherPhone;
-     
+ 
     },
     clearUser(state) {
       state.userInfo.name = ''
@@ -104,7 +104,7 @@ export default {
       return state.userInfo;
     },
     getIsAuthorized(state){
- return state.isAuthorized
+    return state.isAuthorized
     }
   },
 };

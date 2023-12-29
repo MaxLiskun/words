@@ -115,7 +115,7 @@ const login= async (req, res, next) => {
        
         },
         keys.jwtKey,
-        { expiresIn: 10 * 60 }
+        { expiresIn: 60 * 60 }
       );
 
       return res.status(200).json({

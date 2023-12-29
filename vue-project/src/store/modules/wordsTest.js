@@ -5,10 +5,11 @@ export default {
   state: {
     wordsTestSelectedCategory: null,
 
-    mainArrWords: null,
-    mainArrWordsCopy: [],
+    mainArrWords: null, // основний масив
+    mainArrWordsCopy: [], // копия масива з ноього береться тільки коли в mainArrWords менше 5 обєктів
 
     userArrWords: {
+      //масив для отдачи пользователю
       answers: [],
       question: [],
     },
@@ -16,7 +17,7 @@ export default {
     trueAnswerArr: [],
     falseAnswerArr: [],
 
-    resultOfWordsTest: [],
+    resultOfWordsTest: {},
 
     testInProgress: false,
     startTestTime: null,
@@ -37,6 +38,24 @@ export default {
       await ctx.commit("makeWordsTestMainArrWordsCopy", data);
       await ctx.commit("makeWordsTestUserArrWords", data);
     },
+
+    async sendResultToServer(ctx) {
+      const token = await localStorage.getItem("token");
+      const testResult = ctx.state.resultOfWordsTest;
+      const response = await axios.post(
+        `${keys.host}/api/test-results/add-result`,
+
+        { testResult: testResult },
+
+        {
+          headers: {
+            token: token,
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+     // console.log(response);
+    },
   },
 
   mutations: {
@@ -45,7 +64,6 @@ export default {
       //console.log(state.wordsTestSelectedCategory);
     },
 
-
     makeWordsTestMainArrWords(state, data) {
       state.mainArrWords = data;
     },
@@ -53,20 +71,22 @@ export default {
       state.mainArrWordsCopy = data;
     },
 
-
-
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
     makeWordsTestUserArrWords(state) {
       state.testInProgress = true;
 
       if (state.mainArrWords.length >= 5) {
+        //якщо основний масив слів більше пяти
         const randomNumber = Math.floor(Math.random() * 5);
-
         const arr = new Set();
+        //добавляемо рандомні елементи в мвсив
+
         while (arr.size < 5) {
           const randomElement =
             state.mainArrWords[
               Math.floor(Math.random() * state.mainArrWords.length)
             ];
+
           if (Array.from(arr).every((e) => e._id !== randomElement)) {
             arr.add(randomElement);
           }
@@ -74,10 +94,13 @@ export default {
 
         state.userArrWords.answers = Array.from(arr); // Convert the Set to an array
         state.userArrWords.question = state.userArrWords.answers[randomNumber];
+
+        //якщо основний масив слів менше пяти то беремо з резервного
       } else if (
         !state.mainArrWords.length < 5 &&
         state.mainArrWords.length > 0
       ) {
+        //берем одне слово із mainArrWords
         const randomWordFromMainArrWords =
           state.mainArrWords[getRandomInt(0, state.mainArrWords.length)];
         const arr2 = new Set();
@@ -90,43 +113,43 @@ export default {
 
           if (
             randomElement._id !== randomWordFromMainArrWords._id &&
-            Array.from(arr2).every((i) => i._id !== randomElement._id)
+            !arr2.has(randomElement._id)
           ) {
             arr2.add(randomElement);
           }
         }
 
         const newUserArr = Array.from(arr2);
-
+        //Заменяет случайный элемент в массиве newUserArr на randomWordFromMainArrWords.
         newUserArr[getRandomInt(0, newUserArr.length)] =
           randomWordFromMainArrWords;
+
         state.userArrWords.answers = newUserArr;
         state.userArrWords.question = randomWordFromMainArrWords;
       } else {
         state.testInProgress = false;
-
         this.commit("clearWordsTestAllArrays");
       }
     },
+
     checkWordsTestAnswer(state, answer) {
+      //якщо відповідь правильна то закидуємо
       if (answer._id === state.userArrWords.question._id) {
         state.mainArrWords = state.mainArrWords.filter(
           (el) => el._id !== state.userArrWords.question._id
         );
 
-        this.commit("makeWordsTestUserArrWords");
         this.commit("makeWordsTestTrueAnswerArr", state.userArrWords.question);
+        this.commit("makeWordsTestUserArrWords");
       } else if (answer._id !== state.userArrWords.question._id) {
         state.mainArrWords = state.mainArrWords.filter(
           (el) => el._id !== state.userArrWords.question._id
         );
 
-        this.commit("makeWordsTestUserArrWords");
         this.commit("makeWordsTestFalseAnswerArr", state.userArrWords.question);
+        this.commit("makeWordsTestUserArrWords");
       }
     },
-
-   
 
     checkDateTimeOfTest(state, value) {
       if (value) {
@@ -136,9 +159,9 @@ export default {
         const time = formatTime(
           (state.endTimeTest - state.startTestTime) / 1000
         );
-        
+
         const date = formatDate();
-        
+
         state.leftTimeOfWordsTest = time;
         state.dateOfWordsTest = date;
       }
@@ -150,10 +173,7 @@ export default {
     },
     makeWordsTestFalseAnswerArr(state, question) {
       state.falseAnswerArr.push(question);
-      // console.log("false", state.falseAnswerArr);
     },
-
-  
 
     clearWordsTestMainArrWordsCopy(state) {
       state.mainArrWordsCopy = [];
@@ -171,25 +191,24 @@ export default {
       state.userArrWords.question = [];
       state.mainArrWordsCopy = [];
     },
-    clearWordsTestFalseTrueAnswersArr(state){
-      state.trueAnswerArr = []
-      state.falseAnswerArr = []
+    clearWordsTestFalseTrueAnswersArr(state) {
+      state.trueAnswerArr = [];
+      state.falseAnswerArr = [];
     },
 
-
     makeWordsTestResult(state) {
-      const res = {
+      state.resultOfWordsTest = {
         dateOfWordsTest: state.dateOfWordsTest,
-        leftTimeOfWordsTest: state.leftTimeOfWordsTest,
-        name: this.getters.userInfo,
+        userInfo: this.getters.userInfo,
         selectedCategory: state.wordsTestSelectedCategory,
-        truAnswersCount: state.trueAnswerArr.length,
-        falseAnswerCount: state.falseAnswerArr.length,
-        falseAnswerArr: state.falseAnswerArr,
+        leftTimeOfWordsTest: state.leftTimeOfWordsTest,
+        trueAnswersCount: state.trueAnswerArr.length,
+        falseAnswersCount: state.falseAnswerArr.length,
+        falseAnswersArr: state.falseAnswerArr,
       };
-      state.resultOfWordsTest = res
-      console.log(state.resultOfWordsTest);
-      this.commit('clearWordsTestFalseTrueAnswersArr')
+
+       console.log(state.resultOfWordsTest);
+      this.commit("clearWordsTestFalseTrueAnswersArr");
     },
   },
 
@@ -202,6 +221,10 @@ export default {
     },
     getWordTestTestInProgress(state) {
       return state.testInProgress;
+    },
+
+    getResultOfWordsTest(state) {
+      return state.resultOfWordsTest;
     },
   },
 };

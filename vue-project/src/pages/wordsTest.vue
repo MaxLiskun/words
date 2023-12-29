@@ -1,44 +1,84 @@
 <template>
-    <div>
-        <router-link class="router-link" to="/">Home</router-link> <br>
-        <h3>wordsTest</h3>
+  
+   
+     
+<div class="container w-100">
+            <!-- <div class="" v-if="categoryLabel === ''">Давай оберем категорію</div> -->
 
-
-        <div class="" v-if="categoryLabel === ''">Давай оберем категорію</div>
-
-        <categoryList v-model="selectedCategory" @category-change="getCategory">
-            <template v-slot:categoryLabel>
-                <span v-if="categoryLabel">{{ categoryLabel }}({{ categoryLabelWordCount }})</span>
-                <span v-if="getCategories.length === 0">Немає категорій</span>
-                <span v-if="categoryLabel === '' &&  getCategories.length"> Обери категорію({{getCategories.length}})</span>
-            </template>
-        </categoryList>
-
-        <div class="start-test-button" @click="startStopTest" v-if="categoryLabel">
-            <span v-if="!startStopTestButton">Почати тест</span>
-           <span v-if="startStopTestButton">Закінчити тест</span><br><br>
-           <span>{{ wordsTestMessage }}</span>
-
-
-        </div>
-
-        <div class="test" v-if="startStopTestButton && getCategories.length ">
-
-            <div class="test__question" v-if="getWordsTestUserArrWords.question">
-                <strong>  {{ getWordsTestUserArrWords.question.inUkrainian}}</strong>
-              </div>
            
-            <ul class="test__answers" v-for="answer in getWordsTestUserArrWords.answers" :key="answer._id">
-                <li class="test__answer"
-                @click="getAnswer(answer)"
-                >{{answer.inEnglish}}</li>
-            </ul>
- 
-            <span v-if="testInProgress" @click="nextQuestion">наступне питання</span>
-        </div>
+
+<v-container>
+    <v-row>
+        <v-col>
+            <categoryList v-model="selectedCategory" @category-change="getCategory">
+                <template v-slot:categoryLabel>
+                    <span v-if="categoryLabel">{{ categoryLabel }}({{ categoryLabelWordCount }})</span>
+                    <span v-if="getCategories.length === 0">Немає категорій</span>
+                    <span v-if="categoryLabel === '' &&  getCategories.length"> Обери категорію({{getCategories.length}})</span>
+                </template>
+            </categoryList>
+
+       
+
+        </v-col>
+
+        <v-col>
+            <v-btn @click="startStopTest" v-if="!startStopTestButton && categoryLabel">Почати тест</v-btn>
+            <v-btn @click="startStopTest" v-if="startStopTestButton && categoryLabel">Закінчити тест</v-btn>
+        </v-col>
+        {{ wordsTestMessage }}
+    </v-row>
+    <v-divider></v-divider>
+</v-container>
 
 
-    </div>
+
+
+
+        <v-container v-if="startStopTestButton && getCategories.length " class=" ">
+         
+            <!-- Question -->
+                 <v-row v-if="getWordsTestUserArrWords.question">
+                    <v-col>
+                <p>{{ getWordsTestUserArrWords.question.inUkrainian}}</p>
+                    </v-col>
+                </v-row>
+
+
+
+<!-- answers -->
+<v-row>
+                <!-- ряд для відповідей -->
+            <v-col cols="12" md="6">
+                <v-row  v-for="answer in getWordsTestUserArrWords.answers" :key="answer._id">
+                    <v-col>
+                        <p class="rounded-lg pa-4 border elevation-0 hover-answer"  @click="getAnswer(answer)">{{answer.inEnglish}}</p>
+                    </v-col>
+
+                
+                </v-row>
+            </v-col>
+         
+            <!-- ряд для кнопки -->
+            <v-col>
+                <v-row>
+                    <v-col >
+                        <v-btn v-if="testInProgress" @click="nextQuestion">наступне питання</v-btn>
+                    </v-col>
+                </v-row>
+
+            </v-col>
+</v-row>
+        </v-container>
+
+
+
+<!-- результат -->
+{{ getResultOfWordsTest }}
+
+</div>
+
+
 </template>
 <script setup>
 import { useStore } from 'vuex'
@@ -67,14 +107,15 @@ const startStopTestButton = ref(false)
 const testInProgress = computed(() => store.getters.getWordTestTestInProgress)
 const getCategories = computed(() => store.getters.stateCategories)
 const getWordsTestUserArrWords = computed(() => store.getters.getWordsTestUserArrWords)
+const getResultOfWordsTest = computed(() => store.getters.getResultOfWordsTest)
 
 const nextQuestion = () =>{
     store.commit("makeWordsTestUserArrWords")
 }
 
 
-const message = new SpeechSynthesisUtterance('father');
-  window.speechSynthesis.speak(message);
+// const message = new SpeechSynthesisUtterance('father');
+//   window.speechSynthesis.speak(message);
 
 const getCategory = (category) => {
     
@@ -93,36 +134,47 @@ const getAnswer = (answer) => {
 store.commit('checkWordsTestAnswer', answer)
 }
 
+
 const startStopTest = () => {
+    //міняємо кнопку на закінчити тест
     startStopTestButton.value = !startStopTestButton.value
+    //якщо ми закінчуємо тест то очищуємо вибранц категорію і очищаємо масив правильних і неправильних результатів
     if (!startStopTestButton.value) {
         selectedCategory.value = null
         categoryLabel.value = ''
-
-    
         store.commit('clearWordsTestFalseTrueAnswersArr')
+
     } else {
         if(categoryLabelWordCount.value < 6){
             startStopTestButton.value = false
             wordsTestMessage.value = 'Упс((( Замало слів. В категорії повинно бути мінімум 6 слів.'
             setTimeout(()=>{ wordsTestMessage.value = ''},1000)
-           
           
         }else{
             store.dispatch('wordsTestGetWords')
-           
+          
         }
-       
     }
-
 }
+
+
+
+
 watch(testInProgress, (newValue) => {
+
+    //коли testInProgress (тест в процесі) 
     if (newValue) {
+    
         store.commit('checkDateTimeOfTest', true)
     } else {
+        // коли false (тест закінчено)
+       
         startStopTestButton.value = false
-        store.commit('checkDateTimeOfTest', false)
-        store.commit('makeWordsTestResult')
+         store.commit('checkDateTimeOfTest', false)
+         store.commit('makeWordsTestResult')
+         store.dispatch('sendResultToServer')
+        
+      
     }
 })
 
@@ -154,3 +206,17 @@ watch(getCategories, (newValue) => {
 
 
 </script>
+
+
+<style scoped lang="scss">
+
+.hover-answer:hover{
+    background-color: rgb(116, 194, 53);
+    cursor: pointer;
+    transition: all 1s ease;
+}
+
+.container{
+   
+}
+</style>

@@ -2,11 +2,23 @@
  
     
   <div class="container">
-    <h3 >landing</h3>
+    <h3 >Results</h3>
 
 
-    
-    
+<ul v-for="result of resultsOfWordTest">
+  <li>
+
+    <span> {{  result.selectedCategory.name}}</span><br>
+    <span>  {{result.timeOfWordsTest }}   / </span>
+    <span>{{result.dateOfWordsTest }}</span> <br>
+    <span>Ти робив цей тест за {{result.leftTimeOfWordsTest}} год</span>
+    <span> У тесті усього {{ result.selectedCategory.wordCount }} слів , вірних <strong>{{ result.trueAnswersCount }}</strong>  невірних <strong>{{ result.falseAnswersCount }}</strong> </span>
+   <hr>
+  
+  
+  </li>
+</ul>
+
 
 <v-icon>mdi-user-secret</v-icon>
     
@@ -47,40 +59,28 @@
   </div>
   
 </template>
-<script>
+<script setup>
 
-import { RouterLink, RouterView } from 'vue-router'
-import axios from 'axios'
-import addWords from './addWords.vue'
-
-export default{
-    name: "Landing",
-    components:{
-        addWords
-    },
-    data() {
-            return {
-            overlay: true,
-            rating: 4,
-            }
-        },
-
-      
+import { useStore } from 'vuex'
+const store = useStore()
 
 
-    methods :   { 
 
-    },
-    created(){
-    
-    },
-    mounted(){
-      
-    
-    },
-   
-  
-}
+import { ref, reactive, onMounted, watch, computed,} from 'vue';
+import { onBeforeMount } from 'vue';
+
+
+
+
+
+onMounted(() => store.dispatch('getWordTestResults'))
+const resultsOfWordTest = computed(() => store.getters.resultsOfWordTest)
+
+
+
+
+
+
 
 </script>
 

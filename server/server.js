@@ -58,12 +58,15 @@ const userInfo = require('./routes/userInfoRouts')
 const category = require('./routes/categoryRouts')
 const words = require('./routes/wordsRouts')
 const audioRouts = require('./routes/audioRouts')
+const testResults = require('./routes/testResults')
+
 
 //localhost:3000/api/auth/login
 app.use('/api/auth',  authRouts)
 app.use('/api/user', tokenExpiredMiddleware, userInfo)
 app.use('/api/category', category)
 app.use('/api/words',words)
+app.use('/api/test-results',tokenExpiredMiddleware, testResults)
 
 
 app.use('/api/audio', audioRouts)

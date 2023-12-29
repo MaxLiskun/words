@@ -6,6 +6,7 @@ import categoryList from "./modules/categoryList";
 import addWords from "./modules/addWords";
 import wordsList from "./modules/wordsList";
 import wordsTest from "./modules/wordsTest"
+import testWordResults from "./modules/testWordResults";
 
 
 const store = createStore({
@@ -16,7 +17,7 @@ const store = createStore({
     addWords,
     wordsList,
     wordsTest,
-  
+    testWordResults,
   },
 });
 

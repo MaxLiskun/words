@@ -103,7 +103,9 @@
     align-items: center;
     z-index: 200;
     padding: 5px 0px 5px 10px;
-    background-color: rgb(232, 231, 227);
+    //background-color: rgb(255, 255, 255);
+    border: 1px solid black;
+    background-color: rgb(255, 255, 255);
     word-break: break-all;
     border-radius: 5px;
    
@@ -365,8 +367,7 @@ export default {
 
         async deleteCategory(category) {
 
-            await this.$store.dispatch('deleteCategory', category)
-            await this.$store.dispatch('getCategories')
+           
 
 
             this.$store.commit('clearAddWordsSelectedCategory')
@@ -378,6 +379,9 @@ export default {
             this.$store.commit('clearWordListCategoryLabel')
             this.$store.commit('clearWordListSelectedCategory')
             this.$store.commit('clearUserWords')
+
+            await this.$store.dispatch('deleteCategory', category)
+            await this.$store.dispatch('getCategories')
      
             if(this.getCategoriesLength <= 0){
                 this.isButtonActive = false

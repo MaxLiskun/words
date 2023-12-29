@@ -3,21 +3,22 @@
         <div class="container">
 
                       <div class="user-info" v-if="getInfo.name">
-                        <div class="user-info__name">{{ getInfo.name }} {{ getInfo.lastName }} {{ getInfo.userPhone }}</div>
-                        <font-awesome-icon class="user-info__icon" icon="fa-solid fa-user" size="xl"/>
+                        <div class="user-info__name">{{ getInfo.name }} {{ getInfo.lastName }} {{ getInfo.userPhone }}
+                            <font-awesome-icon class="user-info__icon" icon="fa-solid fa-user" size="xl"/>
+
+
+                        </div>
+                       
                
                      </div>
 
           
-                    <div class="nav__links"  v-if="getIsAuthorized === false">
-                        <!-- <router-link  class="nav-links__link-signup link" to="/signup">Реєстрація</router-link>
-                        <router-link  class="nav-links__link-login link" to="/login"> Увійти </router-link> -->
-                    </div>
+                   
                 
               
-                    <div class="logout"  v-if="getIsAuthorized === true"  @click="logout" >
-                        <v-icon icon="mdi-login"></v-icon>
-                    </div>
+             
+                         <v-icon class="logOut"  v-if="getIsAuthorized === true"  @click="logout" icon="mdi-login"></v-icon>
+                   
               
              
           
@@ -97,36 +98,13 @@ export default {
    flex-direction: column;
     
     .user-info{
-        width: 100%;
-        height: 100%;
-   
-        display: flex;
-        justify-content: flex-end;
+     display: flex;
         
     }
-    .nav__links{
-        width: 100%;
-        height: 100%;
-        display: flex;
-       flex-direction: column;
-       
-      
-            .link{
-                width: 100%;
-                height: 100%;
-                display: flex;
-                justify-content: flex-end;
-              
-                text-decoration: none;
-                color: white;
-            }
-    }
+ 
     
     .logout{
-        display: flex;
-        justify-content: flex-end;
-        width: 100%;
-        height: 100%;
+      
        
     }
        
