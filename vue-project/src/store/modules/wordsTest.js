@@ -16,6 +16,7 @@ export default {
 
     trueAnswerArr: [],
     falseAnswerArr: [],
+    testRating: null, // для рейтинга
 
     resultOfWordsTest: {},
 
@@ -54,7 +55,13 @@ export default {
           },
         }
       );
-     // console.log(response);
+      
+   //для того щоб коли результати збереглися то вони автоматично обновилися на головній сторінці
+            if(response.status === 200) {
+              ctx.dispatch('getWordTestResults') // для визова результатов в landing
+            }else{
+              return
+            }
     },
   },
 
@@ -128,7 +135,9 @@ export default {
         state.userArrWords.question = randomWordFromMainArrWords;
       } else {
         state.testInProgress = false;
+        this.commit('calculateWordTestRating')
         this.commit("clearWordsTestAllArrays");
+        
       }
     },
 
@@ -205,11 +214,25 @@ export default {
         trueAnswersCount: state.trueAnswerArr.length,
         falseAnswersCount: state.falseAnswerArr.length,
         falseAnswersArr: state.falseAnswerArr,
+        rating: state.testRating
       };
 
        console.log(state.resultOfWordsTest);
-      this.commit("clearWordsTestFalseTrueAnswersArr");
+       this.commit("clearWordsTestFalseTrueAnswersArr");
+       this.commit('clearWordTestRating')
     },
+
+
+    //rating
+    calculateWordTestRating(state){
+     const percentage = (state.trueAnswerArr.length / state.wordsTestSelectedCategory.wordCount) * 100;
+     state.testRating =  (percentage / 100) * 5;// 8-stars
+    },
+    clearWordTestRating(state){
+    state.testRating = null
+    }
+
+    //rating end
   },
 
   getters: {

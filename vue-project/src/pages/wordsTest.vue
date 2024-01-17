@@ -173,7 +173,7 @@ watch(testInProgress, (newValue) => {
          store.commit('checkDateTimeOfTest', false)
          store.commit('makeWordsTestResult')
          store.dispatch('sendResultToServer')
-        
+      
       
     }
 })

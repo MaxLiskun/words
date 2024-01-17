@@ -1,80 +1,139 @@
+
 <template>
- 
-    
-  <div class="container">
-    <h3 >Results</h3>
 
 
-<ul v-for="result of resultsOfWordTest">
-  <li>
 
-    <span> {{  result.selectedCategory.name}}</span><br>
-    <span>  {{result.timeOfWordsTest }}   / </span>
-    <span>{{result.dateOfWordsTest }}</span> <br>
-    <span>Ти робив цей тест за {{result.leftTimeOfWordsTest}} год</span>
-    <span> У тесті усього {{ result.selectedCategory.wordCount }} слів , вірних <strong>{{ result.trueAnswersCount }}</strong>  невірних <strong>{{ result.falseAnswersCount }}</strong> </span>
-   <hr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!--  -->
+
+  <div class="container mb-10 elevation-10 rounded"
+  v-if="!loading"
+  v-for="(results, date) in resultsOfWordTest">
   
-  
-  </li>
-</ul>
-
-
-<v-icon>mdi-user-secret</v-icon>
+    <v-container fluid  no-gutters class="pa-1 mb-8 align-center justify-center w-100 h-100">
     
-<!--         
-          <v-date-picker
+          <v-row no-gutters >
+            <v-col class="pa-4"  no-gutters>{{ date }}</v-col>
+          </v-row>
+        
+                <v-divider class="w-25"></v-divider>
+          
+          <v-row  no-gutters class="mt-4 mb-4 bg-green"  >
+                                
+                                
+                 <v-col  cols="3" class="" xs="" sm=""  md=""   lg=""  xl=""  align="left"> <strong>Назва</strong></v-col>
+                 <v-col  cols="3" class="" xs="" sm=""  md=""  lg=""   xl=""  align="left"> <strong>Час</strong></v-col>
+                 <v-col  cols="2" class="" xs="" sm=""  md=""  lg=""   xl=""  align="left"> <strong>Вірно/Невірно</strong></v-col>
+                 <v-col  cols="4" class="" xs="" sm=""  md=""  lg=""   xl=""  align="left"> <strong>Швидкість</strong></v-col>
+                 <v-col  cols="0" class="" xs="" sm=""  md=""  lg=""   xl="" ></v-col>
+                 <v-col  cols="0" class="" xs="" sm="0" md="0" lg=""   xl="" ></v-col>
+            
            
-          ></v-date-picker> -->
-    
+          </v-row>
          
-        
-              <!-- <v-rating
-                hover
+                                                               
+        <v-row no-gutters  v-for="el in results" class="pa-0 pb-4">
+          
+              <v-col  cols="3" xs="" sm=""   md="" lg=""  xl="" align="left"  >{{ el.selectedCategory.name }} ({{el.selectedCategory.wordCount}})</v-col>
+              <v-col  cols="3" xs="" sm=""   md="" lg=""  xl="" align="left">{{el.timeOfWordsTest }}</v-col>
+              <v-col  cols="2" xs="" sm=""   md="" lg=""  xl="" align="left" ><span style="color:rgb(47, 255, 109)" >{{el.trueAnswersCount}}</span> / <span style="color: rgb(243, 20, 20)">{{el.falseAnswersCount}}</span></v-col>
+              <v-col  cols="4" xs="" sm=""   md="" lg=""  xl="" align="left">{{ el.leftTimeOfWordsTest }}</v-col>
+              <v-col  cols="" xs="" sm="" md="" lg=""  xl="" align="left" ><v-rating
+                half-increments
+                readonly
                 :length="5"
-                :size="32"
-                :model-value="3"
-                active-color="primary"
-              /> -->
-        
-              <!-- <v-slider></v-slider>
-              <v-textarea clearable label="Label" variant="solo-filled"></v-textarea>
-              <v-carousel>
-                <v-carousel-item
-                  src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                  cover
-                ></v-carousel-item>
-              
-                <v-carousel-item
-                  src="https://cdn.vuetifyjs.com/images/cards/hotel.jpg"
-                  cover
-                ></v-carousel-item>
-              
-                <v-carousel-item
-                  src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-                  cover
-                ></v-carousel-item>
-              </v-carousel> -->
-        
+                :size="23"
+                :model-value="el.rating "
+                color="grey"
+                active-color="orange"
+              /></v-col>
+            
+              <!-- <v-col cols="12" class=" pa-0" ><v-expansion-panels>
+                <v-expansion-panel class="bg-grey"
+                  :title="'Неправельних відповідей:' + el.falseAnswersCount.toString()"
+                  :text="` ${el.falseAnswersArr.map(answer => answer.inEnglish).join(', ')}`"
+                >
+                </v-expansion-panel>
+              </v-expansion-panels></v-col> -->
+              <v-col cols="" sm="12" md="12" lg=""  xl="" align="left" style="font-size: 0.7rem; color:rgb(253, 91, 91);">{{ el.falseAnswersArr.map(answer => answer.inEnglish).join(', ')}}</v-col>
+           
+              <v-divider></v-divider>
+       
+  
+        </v-row>
+     
+  
+    </v-container>
+  
+  
   </div>
   
-</template>
+  <div class="text-center" v-else>
+    <v-progress-linear color="primary" indeterminate></v-progress-linear>
+  </div>
+  <!--  -->
+  
+  
+  
+    
+  </template>
+
+
 <script setup>
 
-import { useStore } from 'vuex'
+
 const store = useStore()
 
-
-
-import { ref, reactive, onMounted, watch, computed,} from 'vue';
-import { onBeforeMount } from 'vue';
-
-
+import { useStore } from 'vuex'
+import { useDate } from 'vuetify'
+import { ref, reactive, onMounted, watch, computed, watchEffect, onBeforeUnmount} from 'vue';
 
 
 
-onMounted(() => store.dispatch('getWordTestResults'))
-const resultsOfWordTest = computed(() => store.getters.resultsOfWordTest)
+const loading = ref(true)
+const resultsOfWordTest  = computed(()=> store.getters.resultsOfWordTest)
+
+
+        
+
+
+
+
+  watchEffect(()=>{
+
+    if(Object.keys(resultsOfWordTest.value).length>0){
+        setTimeout(() => {
+          loading.value = false
+        }, 1100);
+      
+      }else{
+          loading.value = true
+      }
+
+})
+
+onBeforeUnmount(()=>{
+console.log("onBeforeUnmount")
+loading.value = true
+})
+
 
 
 
@@ -85,6 +144,21 @@ const resultsOfWordTest = computed(() => store.getters.resultsOfWordTest)
 </script>
 
 <style scoped>
+
+.container{
+  background-color: rgb(44, 42, 42);
+  color: white;
+  font-family: 'Mulish', sans-serif;
+  font-weight: 100;
+}
+
+
+@media (max-width:400px){
+  .container {
+  font-size: 0.7rem;
+  }
+}
+
 
 
 </style>

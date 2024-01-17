@@ -3,18 +3,16 @@
         <div class="container">
 
                       <div class="user-info" v-if="getInfo.name">
-                        <div class="user-info__name">{{ getInfo.name }} {{ getInfo.lastName }} {{ getInfo.userPhone }}
-                            <font-awesome-icon class="user-info__icon" icon="fa-solid fa-user" size="xl"/>
+                        <div class="user-info__name">{{ getInfo.name }} {{ getInfo.lastName }} 
+                             <font-awesome-icon class="user-info__icon" icon="fa-solid fa-user" size="xl"/>
 
 
                         </div>
                        
                
                      </div>
-
-          
-                   
-                
+                 
+              
               
              
                          <v-icon class="logOut"  v-if="getIsAuthorized === true"  @click="logout" icon="mdi-login"></v-icon>
@@ -66,6 +64,7 @@ export default {
 
     },
     mounted() {
+        
 
 
     },

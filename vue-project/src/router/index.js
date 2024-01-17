@@ -4,6 +4,23 @@ import Landing from '../components/Landing.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+
+    
+    {
+      path: '/pagination',
+      name: 'pagination',
+      component: () => import('../components/pagination.vue'),
+      meta: {
+       title: 'pagination',
+      }
+     },
+
+
+
+
+
+
+
     {
       path: '/',
       name: 'landing',

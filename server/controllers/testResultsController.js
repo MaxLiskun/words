@@ -82,8 +82,10 @@ const addResult = async (req, res) => {
           falseAnswersCount: testResult.falseAnswersCount,
           falseAnswersArr: falseAnswersArr,
           resultId: testResult.userInfo.userId,
-          timeOfWordsTest: format(new Date(), 'HH-mm-ss'), // Текущее время в формате xx-xx-xx
+          timeOfWordsTest: format(new Date(), 'HH:mm:ss'), // Текущее время в формате xx-xx-xx
+          rating: testResult.rating
       });
+
 
       await result.save();
       res.status(200).json({ message: "Результат успішно збережено)" });
@@ -93,17 +95,59 @@ const addResult = async (req, res) => {
   }
 };
 
-const getResults = async ( req, res) =>{
-
+const getResults = async (req, res) => {
     try {
-        const results = await WordTestResult.find({ resultId: req.headers.userid });
-   
-        res.status(200).json({ message: "Слова знайдені", results });
-      } catch (error) {
-        res.status(500).json({ message: "Помилка при пошуку слів" });
-      }
-    };
+      const id = req.query.userId
+        if (!id){
+            return res.status(400).json({ message: "Не вказан Id користувача" });
+        }
+      const results = await WordTestResult.find({ resultId: id })
+   //console.log(results)
+ 
+   const groupedByDate = ({});
+          results.forEach((result) => {
+            const date = result.dateOfWordsTest
 
+            if(!groupedByDate[date]){
+                groupedByDate[date] = []
+            }
+            groupedByDate[date].push(result)
+    
+   })
+  
+
+
+   //================================================================
+   //Сортируєм по последнему добавленому результату
+   const groupedByDateKeys = await Object.entries(groupedByDate)
+
+
+
+   groupedByDateKeys.sort((a, b) => {
+         const dateA = a[0].split('.').reverse().join('-');
+         const dateB = b[0].split('.').reverse().join('-');
+         return new Date(dateA) - new Date(dateB);
+});
+
+
+
+   const groupedByDateSortedFromNew = await Object.fromEntries(groupedByDateKeys.reverse());
+
+  
+
+
+//============================================================================
+
+
+
+
+
+
+      res.status(200).json({ message: "Результати знайдені", groupedByDateSortedFromNew });
+    } catch (error) {
+      res.status(500).json({ message: "Помилка при пошуку результатів" });
+    }
+  };
 
 
 

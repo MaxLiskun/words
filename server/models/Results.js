@@ -44,6 +44,7 @@ const wordSchema = new Schema({
     falseAnswersArr: [wordSchema],
     resultId: String, // Отдельное поле для userId
     timeOfWordsTest: String,
+    rating: Number,
   });
   
   const WordTestResult = mongoose.model("WordTestResult", resultSchema);

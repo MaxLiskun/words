@@ -114,7 +114,8 @@
 
                          
     </div>
-
+  
+     
       
                
     <!-- <RouterView /> -->
@@ -180,6 +181,14 @@ export default {
             trIsValid: false,
             trIsNotValid: false,
 
+
+
+
+
+         
+         
+        
+      
         }
     },
    

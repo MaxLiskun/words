@@ -51,6 +51,10 @@
                                                 <a class="router-link" @click="closeMenuAndNavigate('/wordsList')">wordsList</a>
                                             </li>
 
+                                            <li>
+                                                <a class="router-link" @click="closeMenuAndNavigate('/pagination')">pagination</a>
+                                            </li>
+
                                             <!-- <li><a class="router-link" @click="closeMenuAndNavigate('/addNewData')">addNewData</a></li> -->
                                           
 
@@ -190,7 +194,7 @@ display: flex;
 width: 100%;
 height: 100%;
 flex: 1 1 100%;
-padding: 20px 20px;
+padding: 5px 5px;
 }
 
 }
