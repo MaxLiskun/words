@@ -51,9 +51,7 @@
                                                 <a class="router-link" @click="closeMenuAndNavigate('/wordsList')">wordsList</a>
                                             </li>
 
-                                            <li>
-                                                <a class="router-link" @click="closeMenuAndNavigate('/pagination')">pagination</a>
-                                            </li>
+                                        
 
                                             <!-- <li><a class="router-link" @click="closeMenuAndNavigate('/addNewData')">addNewData</a></li> -->
                                           

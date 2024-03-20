@@ -7,7 +7,9 @@ const categorySchema = new Schema({
   userId: { type: String, unique: false },
   
   categoryId: { type: String, unique: false },
+
   
+  canChange: { type: Boolean },
  
 });
 

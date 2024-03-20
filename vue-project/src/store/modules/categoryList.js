@@ -34,10 +34,12 @@ export default {
          token: localStorage.getItem("token"),
          Authorization: `Bearer ${token}`
      },
+        
+ 
       })
 
-    
-
+  
+      //console.log(response)
    
        await ctx.commit("updateStateCategories", response.data.categoriesWithWordCount);
      } catch (error) {

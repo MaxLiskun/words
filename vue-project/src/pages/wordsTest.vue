@@ -1,97 +1,417 @@
 <template>
-  
-   
-     
-<div class="container w-100">
-            <!-- <div class="" v-if="categoryLabel === ''">Давай оберем категорію</div> -->
+<div class="container w-100 h-100">
 
-           
+                <!-- прогрес -->
 
-<v-container>
-    <v-row>
-        <v-col>
-            <categoryList v-model="selectedCategory" @category-change="getCategory">
-                <template v-slot:categoryLabel>
-                    <span v-if="categoryLabel">{{ categoryLabel }}({{ categoryLabelWordCount }})</span>
-                    <span v-if="getCategories.length === 0">Немає категорій</span>
-                    <span v-if="categoryLabel === '' &&  getCategories.length"> Обери категорію({{getCategories.length}})</span>
-                </template>
-            </categoryList>
+                <v-container fluid  no-gutters class="ma-0 pa-0"  v-if="startStopTestButton && getCategories.length ">
+                    <v-row no-gutters class="ma-0 pa-0">
+                        <v-col>
+                            <v-progress-linear v-model="wordsProgressInPercent" height="2" color="blue"> </v-progress-linear>  
+                        </v-col>
+                    </v-row>
 
-       
+                    <v-row no-gutters class="ma-0 pa-0">
+                        <v-col>
+                            <span style="font-size: 10px; color: blue;" >{{ Math.ceil(wordsProgressInPercent) }}/100%</span>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            
+                    
 
-        </v-col>
+        
+            <!-- ------------------------------------------------------------------------------------------------------------------------------- -->
+            <!-- правильні не павельні кількість  -->
+            <v-container fluid  no-gutters class="mb-2 pa-0"  v-if="startStopTestButton && getCategories.length">
 
-        <v-col>
-            <v-btn @click="startStopTest" v-if="!startStopTestButton && categoryLabel">Почати тест</v-btn>
-            <v-btn @click="startStopTest" v-if="startStopTestButton && categoryLabel">Закінчити тест</v-btn>
-        </v-col>
-        {{ wordsTestMessage }}
-    </v-row>
-    <v-divider></v-divider>
-</v-container>
+            <v-row no-gutters align="center" justify="center">
+                    <!-- true -->
+                        <v-col no-gutters cols="" align="center" justify="center">
+                            <v-icon class="p-4"  style="color: rgb(88, 170, 88); font-size: 18px" icon="mdi-thumb-up"></v-icon> 
+                            <strong class="pa-2" style="color: green; font-size: 13px">{{getTrueAnswersArr.length}}</strong>  
+                        </v-col>
 
-
-
-
-
-        <v-container v-if="startStopTestButton && getCategories.length " class=" ">
-         
-            <!-- Question -->
-                 <v-row v-if="getWordsTestUserArrWords.question">
-                    <v-col>
-                <p>{{ getWordsTestUserArrWords.question.inUkrainian}}</p>
-                    </v-col>
-                </v-row>
+                        <!-- <v-col no-gutters cols="11" align="center" justify="center" >
+                        <v-progress-linear height="2" :model-value="getTrueAnswersArr.length/wordsLengthInCategory*100" color="green"> </v-progress-linear>
+                        </v-col> -->
 
 
+                        <!-- false -->
+                        <v-col no-gutters cols="" class="" align="center" justify="center" >
+                            <v-icon class="" style="color: rgb(255, 0, 0); font-size: 18px" icon="mdi-thumb-down"></v-icon>
+                            <strong class="pa-2" style="color: red; font-size: 13px">{{getFalseAnswersArr.length }}</strong>  
+                        </v-col>
+                        <!-- <v-col  no-gutters cols="11" align="center" justify="center" > 
+                                <v-progress-linear height="2" :model-value="getFalseAnswersArr.length/wordsLengthInCategory*100" color="red"></v-progress-linear>
+                        </v-col> -->
 
-<!-- answers -->
-<v-row>
-                <!-- ряд для відповідей -->
-            <v-col cols="12" md="6">
-                <v-row  v-for="answer in getWordsTestUserArrWords.answers" :key="answer._id">
-                    <v-col>
-                        <p class="rounded-lg pa-4 border elevation-0 hover-answer"  @click="getAnswer(answer)">{{answer.inEnglish}}</p>
-                    </v-col>
+            </v-row>
+            </v-container>
 
-                
-                </v-row>
-            </v-col>
-         
-            <!-- ряд для кнопки -->
-            <v-col>
+
+
+            <!-- ------------------------------------------------------------------------------------------------------------------------------- -->
+            <!-- вибір категорії -->
+
+            <v-container fluid  no-gutters class="ma-0 pa-0">
+                <p  v-if="!startStopTestButton" >Категорія тесту:{{ categoryLabel}}</p>
                 <v-row>
-                    <v-col >
-                        <v-btn v-if="testInProgress" @click="nextQuestion">наступне питання</v-btn>
+                    <v-col  cols="12"   sm="" xs=""  md=""   lg=""  xl="" >
+                    
+                        <categoryList   v-model="selectedCategory" @category-change="getCategory" v-if="testInProgress === false">
+                            <template v-slot:categoryLabel>
+                                <span v-if="categoryLabel">{{ categoryLabel }}({{ categoryLabelWordCount }})</span>
+                                <span v-if="getCategories.length === 0">Немає категорій</span>
+                                <span v-if="!categoryLabel  &&  getCategories.length"> Обери категорію ({{getCategories.length}})</span>
+                            </template>
+                        </categoryList>
+
                     </v-col>
                 </v-row>
-
-            </v-col>
-</v-row>
-        </v-container>
+            </v-container>
 
 
+            <!-- Вибір типу тесту uk-en en-uk -->
+            <v-container fluid v-if="testInProgress === false" >
+                <p>Варіант тесту:  {{ testLangVariant }}</p>
+                    <v-radio-group v-model="testLangVariant">
+                        <v-radio label="Англійська-Українська" value="en-uk"></v-radio>
+                        <v-radio label="Українська-Англійська" value="uk-en"></v-radio>
+                    </v-radio-group>
+            </v-container>
 
+
+
+
+
+
+                <!-- питання відповіді кнопки -->
+                <v-container>
+                    <v-row>
+                        <!-- Відповіді і питання -->
+                        <v-col  cols="" sm="" xs=""  md="8"   lg=""  xl="" >    
+                                            <v-container fluid  no-gutters class="ma-0 pa-0" v-if="startStopTestButton && getCategories.length ">
+
+                                                <!-- Question -->
+                                                    <v-row v-if="getWordsTestUserArrWords.question" class="pb-2">
+                                                    
+                                                        <!-- Text/transcriptions -->
+                                                        <v-col align="center" justify="center">
+                                                            <div style="letter-spacing: 2px; font-size: 20px" class="font-weight-medium text-uppercase text-center">
+                                                                
+                                                                <!-- Якщо чекбоксом вибрано якись варіант -->
+                                                                    <span v-if=" testLangVariant === 'uk-en' "> {{ getWordsTestUserArrWords.question.inUkrainian}} </span>
+                                                                    <span v-else-if="testLangVariant === 'en-uk' ">{{ getWordsTestUserArrWords.question.inEnglish}}  </span>
+                                                                <!-- Транскрипція -->
+                                                                    <span style="font-size: 14px;" class="text-medium-emphasis" v-if="isHelping &&  testLangVariant === 'en-uk' ">{{[getWordsTestUserArrWords.question.inTranscription]}}</span>   
+                                                            
+                                                            
+                                                            
+                                                            </div>
+                                                        </v-col>
+
+                                                        <!-- Play question -->
+                                                        <v-col v-if="testLangVariant === 'en-uk'" cols="1" sm="" xs=""  md=""   lg=""  xl="" class="ma-0 pa-0">
+                                                            <font-awesome-icon icon="fa-high fa-volume-high" style="font-size: 14px;" v-if="isPlayingNow === false && isHelping === true " @click="playDataQuestion(getWordsTestUserArrWords.question.inEnglish)"   ></font-awesome-icon>
+                                                            <font-awesome-icon icon="fa-solid fa-square"     style="font-size: 14px;" v-if="isPlayingNow === true"/>
+                                                        </v-col>
+
+                                                    </v-row>
+
+                                                    <!-- answers -->
+                                                        <v-row no-gutters class="ma-0 pa-0">
+                                                                    <v-col cols="12" class=""  sm="" xs=""  md=""   lg=""  xl="" >
+                                                                            <v-row  no-gutters class="ma-0 pa-0" v-for="(answer, index) in getWordsTestUserArrWords.answers" :key="answer._id">
+                                                                                        <v-col class="mb-6">
+                                                                                        
+                                                                                            <div class="answer pa-2 border"   >  <!--  @click="getAnswer(answer)" -->
+
+                                                                                                <v-container fluid class="pa-0 ma-0">
+                                                                                                        <v-row align="center" justify="center">
+                                                                                                                        <!-- чекбокс -->
+                                                                                                                        <v-col class=" ma-0 pa-0" cols="2" sm="1" xs=""  md=""   lg=""  xl="">
+                                                                                                                            <v-checkbox 
+                                                                                                                            v-model="checkboxUserAnswer"
+                                                                                                                            color="green"
+                                                                                                                            :value="answer"
+                                                                                                                            hide-details
+                                                                                                                        ></v-checkbox>      
+                                                                                                                        </v-col>
+                                                                                                                        
+                                                                                                                    
+
+                                                                                                                        <!-- answers -->
+                                                                                                                        <v-col  class="" cols="8" sm="10" xs=""  md=""   lg=""  xl="">  
+                                                                                                                            <div style="letter-spacing: 1px;"  class="font-weight-medium"> 
+                                                                                                                                
+                                                                                                                                    <!-- Якщо чекбоксом вибрано якись варіант -->
+                                                                                                                                            <span v-if=" testLangVariant === 'uk-en' "> {{ answer.inEnglish}} </span>
+                                                                                                                                            <span v-else-if="testLangVariant === 'en-uk' ">{{ answer.inUkrainian}}  </span>
+                                                                                                                            
+                                                                                                                            </div>
+                                                                                                                        
+                                                                                                                            <div style="font-size: 14px;" class="text-medium-emphasis" v-if="isHelping &&  testLangVariant === 'uk-en' ">{{[answer.inTranscription]}}</div>   
+                                                                                                                        </v-col>
+
+                                                                                                                        <!--play-->
+                                                                                                                        <v-col v-if="testLangVariant === 'uk-en'" cols="1" sm="" xs=""  md=""   lg=""  xl="" class="ma-0 pa-0">
+                                                                                                                            <font-awesome-icon icon="fa-high fa-volume-high" style="font-size: 14px;" @click="playData(answer, index)" v-if="indexOfPlaying !==index"  ></font-awesome-icon>
+                                                                                                                            <font-awesome-icon icon="fa-solid fa-square"     style="font-size: 14px;" v-if="indexOfPlaying === index"/>
+                                                                                                                        </v-col>
+                                                                                                        </v-row>
+                                                                                                </v-container>
+                                                                                    
+
+                                                                                            
+                                                                                            </div>
+
+                                                                                    </v-col>
+                                                                            </v-row>
+                                                                    </v-col> 
+                                                        </v-row>
+                                            </v-container>
+                        </v-col>
+
+                <!-- Кнопки -->
+                        <v-col align="center" justify="center" cols="" sm="" xs=""  md="4"   lg=""  xl="">
+                            
+
+                                <v-container fluid  no-gutters class="ma-0 pa-0">
+                                    <v-row no-gutters class="ma-0 pa-0">
+                                        <v-col   cols="12" align="center" class="">
+                                            <v-btn class="bg-green w-100 mb-2  " v-if="testInProgress && startStopTestButton && getCategories.length" @click="getAnswer(checkboxUserAnswer)">
+                                                    
+                                                    <span>OK</span>
+                                            </v-btn>        
+                                        
+                                        
+                                        
+                                            <v-btn class="bg-blue-lighten-2 w-100 mb-2 " v-if="testInProgress && startStopTestButton && getCategories.length" @click="nextQuestion">наступне питання</v-btn>             
+                                        
+                                            <v-btn class="bg-green w-100" @click="startStopTest" v-if="!testInProgress && categoryLabel && testLangVariant !== null">Почати</v-btn>
+
+                                            <v-btn class="bg-orange w-100 mb-2" @click="helpTranscription" v-if="testInProgress === true">Допомога</v-btn>
+
+                                            <v-btn class="bg-red w-100" @click="startStopTest" v-if="testInProgress === true">Завершити</v-btn>
+                                        </v-col>
+                                        {{ wordsTestMessage }}
+                                    </v-row>
+                                    
+                                </v-container>
+
+                        </v-col>
+
+
+                    </v-row>
+                </v-container>
+
+
+
+
+
+</div>
+ 
+
+
+
+
+
+<!--  -->
+
+
+<v-overlay
+ :model-value="overlay"
+ class="align-center justify-center"
+>
+            <div class="border bg-white rounded pa-2">
+
+                <v-card-item>
+                    <v-card-title> {{ getResultOfWordsTest.selectedCategory.name }} </v-card-title>
+                  
+                    
+                  {{ getResultOfWordsTest.leftTimeOfWordsTest}}
+                  
+                    <v-card-subtitle>
+                      <v-icon class="p-4"  style="color: rgb(88, 170, 88); font-size: 18px" icon="mdi-thumb-up"></v-icon> 
+                      <strong class="pa-2" style="color: green; font-size: 13px">{{ getResultOfWordsTest.trueAnswersCount}}</strong>  
+                      
+                  
+                         <v-icon class="" style="color: rgb(255, 0, 0); font-size: 18px" icon="mdi-thumb-down"></v-icon>
+                          <strong class="pa-2" style="color: red; font-size: 13px">{{getFalseAnswersArr.length }}</strong>  
+                    </v-card-subtitle>
+                  </v-card-item>
+        </div>
+
+</v-overlay>
+
+
+
+
+<v-card v-if="1>2"
+:loading="loading"
+class="mx-auto my-12"
+max-width="500"
+>
+
+
+
+
+
+<v-card-text>
+  <v-row
+    align="center"
+    class="mx-0"
+  >
+    <v-rating
+      :model-value="getResultOfWordsTest.rating"
+      color="amber"
+      density="compact"
+      size="small"
+      half-increments
+      readonly
+    ></v-rating>
+
+    <div class="text-grey ms-4">
+       {{ getResultOfWordsTest.rating}} (5)
+    </div>
+  </v-row>
+
+
+  <div>
+
+  </div>
+</v-card-text>
+
+<v-divider class="mx-4 mb-1"></v-divider>
+
+
+
+
+<v-card-actions>
+    
+
+
+ 
+
+  <v-btn prepend-icon="mdi-share-variant">
+    Поділитися
+  </v-btn>
+
+
+  <v-btn>
+    Приховати
+  </v-btn>
+
+</v-card-actions>
+</v-card>
+<!--  -->
+<div class="">
+<!-- ************************* -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------- -->
 <!-- результат -->
-{{ getResultOfWordsTest }}
+<!--{{ getResultOfWordsTest }}  -->
+<!-- icons -->
+<!-- <font-awesome-icon icon="fa-solid fa-volume-high" />
+                                        <v-icon @click="getTranscription(answer.inTranscription )" color="info" icon="mdi-information"></v-icon>  -->
+<!--  -->
+             
+<!-- 
+ -->
+
 
 </div>
 
 
+
+
+<v-container v-if="testIsOverStatus" class=" rounded-xl  bg-white ">
+            
+    <!-- заголовок картки -->
+    <v-row cols="12">
+        <v-col> Тест пройдено </v-col>
+    </v-row>
+    
+    <!--Імя тесту-->
+    <v-row>
+        <v-col >{{ getResultOfWordsTest.selectedCategory.name }}</v-col>
+    </v-row>
+
+    <!-- Правильні не правильні -->
+    <v-row>
+        <v-col>
+            <!-- true -->
+            <v-icon class="p-4"  style="color: rgb(88, 170, 88); font-size: 18px" icon="mdi-thumb-up"></v-icon> 
+            <strong class="pa-2" style="color: green; font-size: 13px">{{ getResultOfWordsTest.trueAnswersCount }}</strong>  
+        </v-col>
+        <v-col>
+            <!-- false -->
+            <v-icon class="" style="color: rgb(255, 0, 0); font-size: 18px" icon="mdi-thumb-down"></v-icon>
+            <strong class="pa-2" style="color: red; font-size: 13px">{{ getResultOfWordsTest.falseAnswersCount }}</strong>  
+        </v-col>
+    </v-row>
+
+    <!-- DIVIDER -->
+    <v-divider class="mx-4 mb-1"></v-divider>
+
+
+    <v-row v-for="el in getResultOfWordsTest.falseAnswersArr">
+        <v-col >
+            {{ el.inEnglish }}
+    
+        </v-col>
+    </v-row>
+    
+    <!-- Кнопки -->
+    v-row
+</v-container>
+
+
+
+ 
+
+
+
+  
+     
+  
+  
+
 </template>
 <script setup>
+
+
 import { useStore } from 'vuex'
-const store = useStore()
-import { ref, reactive, onMounted, watch, computed } from 'vue';
+import { ref, reactive, onMounted, watch, computed, onBeforeUnmount } from 'vue';
 import categoryList from '../components/categoryList.vue';
+import { playLongAudio } from '../store/modules/helpers';
 
-////////////////////////////////////////////////////////////
+const store = useStore()
 
+const overlay = ref(true)
 
+//Для вибота типа теста en-uk uk-en
+
+const testLangVariant = ref(null)
+
+//=================================
+const checkboxUserAnswer = ref(null)
+
+//для допомоги
+const isHelping = ref(false)
+
+//для програвання
+const isPlayingNow = ref(false)//для того щоб знати коли закінчиться програвання
+const indexOfPlaying = ref(null)// індекс програваємого обєкта
+//================
 
 const selectedCategory = ref(null)
 
+
+//для підрахунку процентів в діаграмі
+const wordsLengthInCategory = ref(0)//усього слів в категорії
+const wordsLengthInProgress = ref(0)//скільки слів зроблено
+const wordsProgressInPercent = ref(0)//скільки слів зроблено в процентах
+//  
 
 const categoryLabel = ref('')
 const categoryLabelLength = ref(null)
@@ -99,9 +419,7 @@ const categoryLabelWordCount = ref(null)
 const categoryLabel_id = ref(null)
 const wordsTestMessage = ref ('')
 
-
 const startStopTestButton = ref(false)
-
 
 
 const testInProgress = computed(() => store.getters.getWordTestTestInProgress)
@@ -109,14 +427,66 @@ const getCategories = computed(() => store.getters.stateCategories)
 const getWordsTestUserArrWords = computed(() => store.getters.getWordsTestUserArrWords)
 const getResultOfWordsTest = computed(() => store.getters.getResultOfWordsTest)
 
+
+const getTrueAnswersArr = computed(() => store.getters.getTrueAnswersArr)
+const getFalseAnswersArr = computed(()=> store.getters.getFalseAnswersArr) 
+
+
+const testIsOverStatus = computed(() => store.getters.getTestIsOverStatus)
+
+
+
+
+
+
+
+const playData = ( async(answer, index)=>{
+    
+
+    if(isPlayingNow.value === false){
+                indexOfPlaying.value = index // присвоюємо змінній миттєво індекс вибраного обєкта щоб значки помінялися
+                isPlayingNow.value = true  
+                await  playLongAudio(answer.inEnglish, 'en')
+                isPlayingNow.value = false
+                indexOfPlaying.value = null  // ставимо значення в нуль щоб значки помінялися
+    }
+
+
+})
+const playDataQuestion = ( async(data)=>{
+    console.log(data)
+    if(isPlayingNow.value === false){
+              
+                isPlayingNow.value = true  
+                await  playLongAudio(data, 'en')
+                isPlayingNow.value = false
+             
+    }
+})
 const nextQuestion = () =>{
-    store.commit("makeWordsTestUserArrWords")
+  
+    if(isPlayingNow.value === false){// щоб коли програвання ще не закінчено не переходити на наступне запитання
+         checkboxUserAnswer.value = null
+         indexOfPlaying.value = null
+         isHelping.value = false
+         store.commit("makeWordsTestUserArrWords")
+    }else{
+        return
+    }
+   
 }
-
-
-// const message = new SpeechSynthesisUtterance('father');
-//   window.speechSynthesis.speak(message);
-
+const helpTranscription = () =>{
+   isHelping.value = true
+}
+//функція для очистки
+const clearData = () =>{
+        testLangVariant.value = null   // для очистки впріанту тесту
+        selectedCategory.value = null  // для очистки вибраної категорії
+        wordsLengthInCategory.value =  wordsLengthInProgress.value = wordsProgressInPercent.value = 0 // для очистки прогресу
+        categoryLabel.value = ''        //для очистки вибраної категорії
+        checkboxUserAnswer.value = null // для очистки чекбокса відповідей користувача
+        isHelping.value = false      
+}
 const getCategory = (category) => {
     
     categoryLabel.value = category.name
@@ -125,67 +495,84 @@ const getCategory = (category) => {
    // userCategory.value = category
     categoryLabel_id.value = category._id 
 
+
+  wordsLengthInCategory.value = category.wordCount//усього запитань в категорії
+
     store.commit('makeWordsTestSelectedCategory', category)
    
 }
 
+const getAnswer = (answer) => {  
+if(answer){
+    wordsLengthInProgress.value += 1//для підрахунку кількості відповідей
+    wordsProgressInPercent.value = wordsLengthInProgress.value/wordsLengthInCategory.value * 100////для підрахунку кількості відповідей в процентах
 
-const getAnswer = (answer) => {
-store.commit('checkWordsTestAnswer', answer)
+            setTimeout(() => {
+                checkboxUserAnswer.value = null
+                isHelping.value = false
+                store.commit('checkWordsTestAnswer', answer)
+            }, 100);
+
+
+}else{
+    return
 }
 
-
+}
+//коли натиснули кнопку почати тест
 const startStopTest = () => {
+   
     //міняємо кнопку на закінчити тест
     startStopTestButton.value = !startStopTestButton.value
+ 
     //якщо ми закінчуємо тест то очищуємо вибранц категорію і очищаємо масив правильних і неправильних результатів
     if (!startStopTestButton.value) {
-        selectedCategory.value = null
-        categoryLabel.value = ''
-        store.commit('clearWordsTestFalseTrueAnswersArr')
-
+            store.commit('checkDateTimeOfTest', false)//кінець відліку часу
+            store.commit('clearWordsTestAllArrays') //clearWordsTestFalseTrueAnswersArr також test in progress === false
+            clearData()//Ощищаемся
+    
     } else {
+        //якщо менше 6 слів
         if(categoryLabelWordCount.value < 6){
             startStopTestButton.value = false
             wordsTestMessage.value = 'Упс((( Замало слів. В категорії повинно бути мінімум 6 слів.'
             setTimeout(()=>{ wordsTestMessage.value = ''},1000)
           
         }else{
-            store.dispatch('wordsTestGetWords')
-          
+            //якщо все добре то погнали))))
+            store.dispatch('wordsTestGetWords') // підтягуєм слова
+            store.commit('checkDateTimeOfTest', true)//старт відліку часу
+            //store.commit('clearWordTestResult')// для очистки минулого результату  якщо він є
         }
     }
 }
 
 
-
-
-watch(testInProgress, (newValue) => {
-
-    //коли testInProgress (тест в процесі) 
-    if (newValue) {
-    
-        store.commit('checkDateTimeOfTest', true)
-    } else {
-        // коли false (тест закінчено)
-       
-        startStopTestButton.value = false
-         store.commit('checkDateTimeOfTest', false)
-         store.commit('makeWordsTestResult')
-         store.dispatch('sendResultToServer')
-      
-      
-    }
+// коли тест закінчено
+watch( testIsOverStatus, (newValue)=>{
+    //коли тест повністю закінчено
+   if(newValue === true){
+         store.commit('checkDateTimeOfTest', false)//кінець відліку часу
+         store.commit('makeWordsTestResult') // робим результат
+         store.dispatch('sendResultToServer')//відсилаємо на сервер
+         store.commit('clearWordsTestAllArrays') // очищаємо всі масиви в сторі і testProgress 
+         clearData()//Ощищаемо все на клієнті
+        startStopTestButton.value = !startStopTestButton.value  //міняємо кнопку
+        overlay.value = true // для показу результатів після тесту
+   }else{
+      return
+   }
 })
-
 
 watch(getCategories, (newValue) => {
     //якщо ми відкрили тест та хочемо в процесі його змінити
     newValue.forEach(element => {
         if (element._id === categoryLabel_id.value) {
             categoryLabel.value = element.name
-        }
+        } 
     })
+    categoryLabel.value = ''//для очистки вибраної категорії коли виходиш з тесту
+
     //якщо тест відкритий і ми видаляємо відкриту категорію то все закриеться та очиститься
     if (categoryLabel_id.value) {
         const findElement = newValue.find(element => element._id === categoryLabel_id.value)
@@ -195,28 +582,34 @@ watch(getCategories, (newValue) => {
             categoryLabelWordCount.value = null
             categoryLabel_id.value = null
             startStopTestButton.value = false
+           
         }
     }
 })
 
+//якщо ми виходимо з елементу
+onBeforeUnmount(()=>{
+         store.commit('clearWordsTestAllArrays') // очищаємо всі масиви в сторі і testProgress 
+         clearData()//Ощищаемо все на клієнті
+})
 
+onMounted(()=>{
+    store.commit('clearWordsTestAllArrays') // очищаємо всі масиви в сторі і testProgress 
+         clearData()//Ощищаемо все на клієнті
 
+})
 
-
+watch(overlay,(val)=>{console.log(val)});
 
 
 </script>
 
 
 <style scoped lang="scss">
+.answer{
+cursor: pointer;
 
-.hover-answer:hover{
-    background-color: rgb(116, 194, 53);
-    cursor: pointer;
-    transition: all 1s ease;
+
 }
 
-.container{
-   
-}
 </style>

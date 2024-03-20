@@ -1,50 +1,76 @@
 <template>
-    <div>
-      <div v-for="(item, i) in paginatedItems" :key="i">
-        <v-card>{{ item }} {{ i }}</v-card>
-        <br>
+    <div v-if="!loading">
+
+      <div v-for="(item) in paginatedItems" >
+       <slot  name="card-content" :item="item"></slot>
+      
       </div>
+
+
   
-      <v-pagination
+      <v-pagination 
         v-model="page"
-        :length="Math.ceil(items.length / 5)"
+        :length="Math.ceil(data.length / itemsOnPage)"
       ></v-pagination>
+
+
+
+      
     </div>
+
+    <div class="text-center" v-else>
+      <v-progress-linear color="primary" indeterminate></v-progress-linear>
+    </div>
+   
   </template>
   
-  <script>
-  import { ref, computed } from 'vue';
+  <script setup>
+  import { ref, computed, defineProps, watchEffect, onMounted, defineEmits  } from 'vue';
+
+
+  const { data,} = defineProps(['data',]);
+
+
+  const emits = defineEmits();
   
-  export default {
-    setup() {
+
+
+      const loading = ref('false')
       const page = ref(1);
-  
-      const items = [
-        'Item 2',
-        'Item 3',
-        'Item 4',
-        'Item 5',
-        'Item 6',
-        'Item 7',
-        'Item 8',
-        'Item 9',
-        'Item 10',
-      ];
-  
-      const itemsOnPage = 5;
-  
+      const itemsOnPage = 1;        //керування кількістю елементів на сторінці!!!
+      const loadingTime = ref(1100)  //затримка для сторінок!!!!
+    
+
+
       const paginatedItems = computed(() => {
-        const startIndex = (page.value - 1) * itemsOnPage;
-        const endIndex = startIndex + itemsOnPage;
-        return items.slice(startIndex, endIndex);
+              const startIndex = (page.value - 1) * itemsOnPage;//  0
+              const endIndex = startIndex + itemsOnPage; // 3
+              window.scrollTo(0, 0); // для того щоб сторінка піднімалася догори
+            
+              if(!loading.value) {
+                return data.slice(startIndex, endIndex);
+        
+        }
+      
+
+
       });
+
+
+// якщо сторінку перегортаєш то loading true а через затримку 200 
+watchEffect(()=>{
+  if(page.value){
+    loading.value = true
+    setTimeout(() => {
+      loading.value = false
+    }, loadingTime.value);                   
+
+  }
+})
+    
+
   
-      return {
-        page,
-        paginatedItems,
-        items,
-      };
-    },
-  };
+   
+  
   </script>
   

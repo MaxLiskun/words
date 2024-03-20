@@ -18,8 +18,7 @@ const addCategory = async (req, res) => {
         name: req.body.name,
         userId: req.body.userId,
         categoryId: req.body.categoryId,
-        categoryLength: req.body.categoryLength,
-       
+        canChange: true
       });
       await newCategory.save();
       res.status(201).json({ message: "Категорію успішно збережено)" });

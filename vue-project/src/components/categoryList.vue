@@ -37,7 +37,7 @@
                                     </div>
                         
                                     
-                                    <div class="item-main__nav">
+                                    <div class="item-main__nav" v-if="category.canChange === true">
                                         <span class="item-main-nav__edit-note   material-symbols-outlined" @click="renameCategory(category)">edit_note</span>
                                         <span class="item-main-nav__delete-note material-symbols-outlined" @click="deleteCategory(category)">delete</span>
                                     </div>             
@@ -104,7 +104,7 @@
     z-index: 200;
     padding: 5px 0px 5px 10px;
     //background-color: rgb(255, 255, 255);
-    border: 1px solid black;
+    border: 1px solid rgb(202, 202, 202);
     background-color: rgb(255, 255, 255);
     word-break: break-all;
     border-radius: 5px;
@@ -180,7 +180,7 @@
 //================================================================
 .category__item {
     display: flex;
-    border-bottom: 1px solid grey;
+   // border-bottom: 1px solid grey;
     width:100%;
     height: 100%;
     flex-direction: column;

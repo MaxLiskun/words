@@ -23,6 +23,7 @@ export default {
     testInProgress: false,
     startTestTime: null,
     endTestTime: null,
+    testIsOver: false,
 
     leftTimeOfWordsTest: "",
     dateOfWordsTest: "",
@@ -81,31 +82,32 @@ export default {
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
     makeWordsTestUserArrWords(state) {
       state.testInProgress = true;
-
+      state.testIsOver = false;
+      
       if (state.mainArrWords.length >= 5) {
         //якщо основний масив слів більше пяти
-        const randomNumber = Math.floor(Math.random() * 5);
-        const arr = new Set();
+              const randomNumber = Math.floor(Math.random() * 5);
+              const arr = new Set();
         //добавляемо рандомні елементи в мвсив
 
-        while (arr.size < 5) {
-          const randomElement =
-            state.mainArrWords[
-              Math.floor(Math.random() * state.mainArrWords.length)
-            ];
+              while (arr.size < 5) {
+                const randomElement =
+                  state.mainArrWords[
+                    Math.floor(Math.random() * state.mainArrWords.length)
+                  ];
 
-          if (Array.from(arr).every((e) => e._id !== randomElement)) {
-            arr.add(randomElement);
-          }
-        }
+                if (Array.from(arr).every((e) => e._id !== randomElement)) {
+                  arr.add(randomElement);
+                }
+              }
 
-        state.userArrWords.answers = Array.from(arr); // Convert the Set to an array
-        state.userArrWords.question = state.userArrWords.answers[randomNumber];
+              state.userArrWords.answers = Array.from(arr); // Convert the Set to an array
+              state.userArrWords.question = state.userArrWords.answers[randomNumber];
 
         //якщо основний масив слів менше пяти то беремо з резервного
       } else if (
-        !state.mainArrWords.length < 5 &&
-        state.mainArrWords.length > 0
+            !state.mainArrWords.length < 5 &&
+            state.mainArrWords.length > 0
       ) {
         //берем одне слово із mainArrWords
         const randomWordFromMainArrWords =
@@ -134,9 +136,10 @@ export default {
         state.userArrWords.answers = newUserArr;
         state.userArrWords.question = randomWordFromMainArrWords;
       } else {
-        state.testInProgress = false;
-        this.commit('calculateWordTestRating')
-        this.commit("clearWordsTestAllArrays");
+              state.testInProgress = false
+              state.testIsOver = true
+              this.commit('calculateWordTestRating')
+              this.commit("clearWordsTestAllArrays");
         
       }
     },
@@ -178,7 +181,7 @@ export default {
 
     makeWordsTestTrueAnswerArr(state, question) {
       state.trueAnswerArr.push(question);
-      //  console.log("true", state.trueAnswerArr);
+     
     },
     makeWordsTestFalseAnswerArr(state, question) {
       state.falseAnswerArr.push(question);
@@ -199,12 +202,14 @@ export default {
       state.userArrWords.answers = [];
       state.userArrWords.question = [];
       state.mainArrWordsCopy = [];
+      state.testInProgress = false;
+  
     },
     clearWordsTestFalseTrueAnswersArr(state) {
       state.trueAnswerArr = [];
       state.falseAnswerArr = [];
     },
-
+//================================================================
     makeWordsTestResult(state) {
       state.resultOfWordsTest = {
         dateOfWordsTest: state.dateOfWordsTest,
@@ -214,6 +219,7 @@ export default {
         trueAnswersCount: state.trueAnswerArr.length,
         falseAnswersCount: state.falseAnswerArr.length,
         falseAnswersArr: state.falseAnswerArr,
+        trueAnswerArr: state.trueAnswerArr,
         rating: state.testRating
       };
 
@@ -222,11 +228,15 @@ export default {
        this.commit('clearWordTestRating')
     },
 
+    clearWordTestResult(state){
+      state.resultOfWordsTest = {}
+    },
 
+    
     //rating
     calculateWordTestRating(state){
      const percentage = (state.trueAnswerArr.length / state.wordsTestSelectedCategory.wordCount) * 100;
-     state.testRating =  (percentage / 100) * 5;// 8-stars
+     state.testRating =  (percentage / 100) * 5;// 5-stars
     },
     clearWordTestRating(state){
     state.testRating = null
@@ -249,5 +259,15 @@ export default {
     getResultOfWordsTest(state) {
       return state.resultOfWordsTest;
     },
+    getTrueAnswersArr(state) {
+      return state.trueAnswerArr
+    },
+    getFalseAnswersArr(state){
+      return state.falseAnswerArr
+    },
+    getTestIsOverStatus(state) {
+      return state.testIsOver
+    },
+  
   },
 };

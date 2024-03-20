@@ -37,10 +37,10 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
-import { faUserSecret,faImage,faBars,faBolt,faHome,faBook,faBookOpen, faList, faShop, faXmark, faArrowRightFromBracket, faUser  } from '@fortawesome/free-solid-svg-icons'
+import { faUserSecret,faImage,faBars,faBolt,faHome,faBook,faBookOpen, faList, faShop, faXmark, faArrowRightFromBracket, faUser, faVolumeHigh, faSquare } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
-library.add(faUserSecret,faImage,faBars,faBolt,faHome,faBook,faBookOpen, faList, faShop, faXmark, faArrowRightFromBracket, faUser )
+library.add(faUserSecret,faImage,faBars,faBolt,faHome,faBook,faBookOpen, faList, faShop, faXmark, faArrowRightFromBracket, faUser, faVolumeHigh, faSquare )
 //================================================================
 
 

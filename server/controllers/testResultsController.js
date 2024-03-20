@@ -7,9 +7,55 @@ const { format } = require('date-fns');
 
 
 
+const repeatCategory = 'Потрібно повторити' // назва категорії яка зберігається якщо ти
+
+
+
+
 const addResult = async (req, res) => {
+
   const testResult = req.body.testResult;
+
+
   try {
+        
+    //Якщо користувач відповідає правильно то з сатегорії 'Повтори ще' видаляються слова які були додані раніше
+    if (testResult.trueAnswerArr.length > 0) {
+        const findRepeatCategory = await Category.findOne({ name: `${repeatCategory}` }) // знаходемо категорію 'Повтори ще'
+        
+        if (findRepeatCategory) { // Якщо вона існує то продовжуємо
+          //  console.log('Є кетегорія для повторення');
+           // console.log(findRepeatCategory.categoryId) // беремо id категорії для повторення
+            
+            for (const el of testResult.trueAnswerArr) { 
+                        try {
+                            console.log(el)
+                            const deleteWord = await Words.findOneAndDelete({ // перебираємо кожне слово  і якщо вонно є то видаляємо
+                                inEnglish: el.inEnglish,
+                                inUkrainian: el.inUkrainian,
+                                inTranscription: el.inTranscription,
+                                categoryId: findRepeatCategory.categoryId,
+                            });
+            
+                            if (deleteWord) {
+                               // console.log('Слово видалено з категорії для повторення');
+                            }
+                        } catch (error) {
+                            console.error('Помилка при видаленні слова:', error);
+                        }
+            }
+        } else {
+           // console.log('Немає категорії для повторення');
+        }
+    } else {
+       // console.log('У користувача немає правильних відповідей');
+    }
+
+
+ 
+
+
+    //створюємо масив обєктів з неправельними словами
       const falseAnswersArr = req.body.testResult.falseAnswersArr.map(item => ({
           _id: item._id,
           inEnglish: item.inEnglish,
@@ -19,33 +65,39 @@ const addResult = async (req, res) => {
           category: item.category,
           __v: item.__v,
       }));
-
+    //перевіряємо чи є категорія для збереження неправельних слів, якщо немає то створюємо її
       const category = await Category.findOneAndUpdate(
-          { name: 'Повтори ще)' },
-          { $setOnInsert: { userId: testResult.userInfo.userId, categoryId: Date.now() } },
+        
+          { name: `${repeatCategory}`},
+          { $setOnInsert: { userId: testResult.userInfo.userId, categoryId: Date.now(), canChange: false } },
           { upsert: true, new: true }
       );
 
+   
+
+
+     //Первіряємо чи є в створеному масиві з неправильних слів обєкти
       if (falseAnswersArr.length) {
-          console.log('є неправильні');
+          console.log('Є неправильні слова');
           
           for (const element of falseAnswersArr) {
               try {
+                //перевіряємо чи є такі слова в категорії з неправельними словами, яку ми раніше перевірили
                   const sameWord = await Words.find({
                       inEnglish: element.inEnglish,
                       inUkrainian: element.inUkrainian,
                       inTranscription: element.inTranscription,
-                      categoryId: category.categoryId,
+                      categoryId: category.categoryId, //!!!!!!!!!
                   });
-
+                 //якщо немає таких слів то зберігаємо їx в категорії з неправилиними словами 
                   if (!sameWord.length){
-                      console.log('слова немає');
+                      console.log(' Такого слова немає, отож збережу)');
                       const word = new Words({
                           inEnglish: element.inEnglish,
                           inUkrainian: element.inUkrainian,
                           inTranscription: element.inTranscription,
-                          categoryId: category.categoryId,
-                          category: category._id,
+                          categoryId: category.categoryId, //!!!!
+                          category: category._id, //!!!!
                       });
                       await word.save();
                   }
@@ -58,6 +110,10 @@ const addResult = async (req, res) => {
           console.log('неправильних немає');
       }
 
+
+
+      ////////////////////////////////////////////////////////////////
+      // Зберігаємо результат
       const result = new WordTestResult({
           dateOfWordsTest: testResult.dateOfWordsTest,
           userInfo: {
@@ -77,13 +133,13 @@ const addResult = async (req, res) => {
               __v: testResult.selectedCategory.__v,
               wordCount: testResult.selectedCategory.wordCount,
           },
-          leftTimeOfWordsTest: testResult.leftTimeOfWordsTest,
-          trueAnswersCount: testResult.trueAnswersCount,
-          falseAnswersCount: testResult.falseAnswersCount,
-          falseAnswersArr: falseAnswersArr,
-          resultId: testResult.userInfo.userId,
-          timeOfWordsTest: format(new Date(), 'HH:mm:ss'), // Текущее время в формате xx-xx-xx
-          rating: testResult.rating
+            leftTimeOfWordsTest: testResult.leftTimeOfWordsTest,
+            trueAnswersCount: testResult.trueAnswersCount,
+            falseAnswersCount: testResult.falseAnswersCount,
+            falseAnswersArr: falseAnswersArr,
+            resultId: testResult.userInfo.userId,
+            timeOfWordsTest: format(new Date(), 'HH:mm:ss'), // Текущее время в формате xx-xx-xx
+            rating: testResult.rating
       });
 
 
