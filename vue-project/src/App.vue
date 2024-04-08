@@ -75,7 +75,7 @@
                            
             </div>
                   
-
+<div class="overline"></div>
     </div>
 
  
@@ -113,7 +113,7 @@ $router-link-hover-background: rgb(179, 179, 187);
     background-color: $header-background-color;
     color: $header-color;
     border-bottom: 1px solid $border-color;
-    z-index: 997;
+    z-index: 250;
   
    
               .header-container{

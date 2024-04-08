@@ -223,7 +223,7 @@ export default {
         rating: state.testRating
       };
 
-       console.log(state.resultOfWordsTest);
+      ;
        this.commit("clearWordsTestFalseTrueAnswersArr");
        this.commit('clearWordTestRating')
     },
