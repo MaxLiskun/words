@@ -211,67 +211,6 @@
 
 
 
-            <div v-if="testIsOverStatus"  class="overlay"></div>
-
-            <div v-if="testIsOverStatus"  class="overlay-content">
-
-
-                            <v-container v-if="testIsOverStatus"  class="result">
-                                hello2
-                            <!-- заголовок картки -->
-                            <v-row cols="12">
-                            <v-col> Тест пройдено
-                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illum sint fugiat nisi autem minima blanditiis aspernatur odit cum quia commodi aliquid eum sed omnis iusto porro animi, quod dicta nemo?    
-                            </v-col>
-                            </v-row>
-                            
-                            
-                            
-                            <!--Імя тесту-->
-                            <v-row>
-                            <v-col >{{ getResultOfWordsTest.selectedCategory.name }}</v-col>
-                            </v-row>
-                            
-                            <!-- Правильні не правильні -->
-                            <v-row>
-                            <v-col>
-                                <!-- true -->
-                                <v-icon class="p-4"  style="color: rgb(88, 170, 88); font-size: 18px" icon="mdi-thumb-up"></v-icon> 
-                                <strong class="pa-2" style="color: green; font-size: 13px">{{ getResultOfWordsTest.trueAnswersCount }}</strong>  
-                            </v-col>
-                            <v-col>
-                                <!-- false -->
-                                <v-icon class="" style="color: rgb(255, 0, 0); font-size: 18px" icon="mdi-thumb-down"></v-icon>
-                                <strong class="pa-2" style="color: red; font-size: 13px">{{ getResultOfWordsTest.falseAnswersCount }}</strong>  
-                            </v-col>
-                            </v-row>
-                            
-                            <!-- DIVIDER -->
-                            <v-divider class="mx-4 mb-1"></v-divider>
-                            
-                            
-                            <v-row v-for="el in getResultOfWordsTest.falseAnswersArr">
-                            <v-col >
-                                {{ el.inEnglish }}
-                                <!--  -->
-                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Natus aperiam eaque sunt expedita architecto exercitationem inventore accusantium est velit. Veritatis pariatur commodi fuga iure nostrum, libero iste voluptate dolores vero!
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi aperiam odio maxime ducimus est tempora. Magnam distinctio commodi suscipit impedit laudantium. Dolor sequi veritatis quo quibusdam. Quam explicabo debitis sint! Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto, molestias eaque, alias nobis sed, sequi exercitationem culpa illum amet voluptatibus quisquam cupiditate? Incidunt soluta, dolore eligendi quas in culpa omnis.
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit, optio quae! Distinctio accusamus deserunt earum obcaecati optio eaque! Quas voluptatibus aut impedit laborum incidunt sapiente saepe aliquam commodi temporibus amet.
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eos eum velit a magnam quam, sit doloribus repudiandae natus? Inventore velit ex iusto est eos eveniet! Repudiandae, sunt ut. Soluta amet ad aspernatur dolorem nam laborum molestiae explicabo, animi itaque est eveniet dolorum nostrum cum sunt voluptas. Unde, provident tempora! Aliquid sed tempore facere molestias accusamus fugit unde ullam quia mollitia dicta magni adipisci necessitatibus temporibus obcaecati sit praesentium architecto voluptatibus magnam, et beatae quasi debitis? Quasi aut expedita eum ut earum ipsa porro optio a dolore iusto minus sunt quod provident deleniti amet dolorum nobis praesentium impedit, id consectetur explicabo minima ullam distinctio. Recusandae qui, totam magnam deserunt veritatis ullam consectetur, praesentium quibusdam iste aspernatur tempore quis, quisquam quaerat eum non laboriosam nobis pariatur? Omnis laudantium inventore eos magni doloribus, illum quibusdam ea praesentium ad fugiat incidunt in quidem et adipisci numquam modi excepturi, accusamus nisi, alias aspernatur facilis explicabo maiores sint! Dignissimos ut sunt inventore culpa soluta? Ut omnis debitis aspernatur fugit perferendis praesentium at magnam maiores odio distinctio facilis dolor dolore iste delectus odit, consectetur reprehenderit beatae ipsam explicabo autem! Aliquid quod labore a fugit quo veritatis in deserunt repudiandae accusantium cumque, saepe atque quia libero magni perferendis at? Incidunt error cumque ipsa natus, earum, soluta quis ullam quisquam corrupti maxime nihil cupiditate sunt veniam doloremque. Voluptas quam quos suscipit sunt quidem, iure eius deserunt dolore quod, dolor molestiae. Odio soluta nobis commodi dolores corrupti? Nam, sapiente unde tempora fugit nobis dolorum? Fugiat nostrum, quos pariatur distinctio tempore culpa consequuntur soluta qui. Quis excepturi eius earum nobis quidem harum quisquam numquam soluta, consectetur adipisci nisi nihil quam quia iure ab corporis error in illum recusandae deleniti ea nam. Nam minima dolores quis aperiam est voluptatum quae, odio ipsam cupiditate nemo consectetur eos ad qui id recusandae laudantium, saepe inventore pariatur? Ea sint placeat nemo ab, quia incidunt architecto laborum maxime molestias et ducimus consequatur iste inventore accusantium optio dolorem quae rerum. Nobis at omnis magnam deleniti voluptas nulla, quae quod dolores molestiae quaerat architecto. Accusamus doloribus fugit ipsa illum a quos est numquam quas provident. Porro perferendis neque molestias error harum asperiores eos ut repellendus voluptate ab! Asperiores, voluptatum quae incidunt, dolorem obcaecati nisi voluptate odio magni, ab maxime error ipsum iusto nam fugiat consequuntur laboriosam minus facilis vitae et! Illo, non ab qui excepturi, ducimus nulla architecto adipisci tempora similique vel laborum voluptate delectus a reprehenderit? Accusamus harum laudantium vero excepturi reiciendis aliquam. Iusto maxime accusamus ab quasi rerum, sequi consequatur aperiam veritatis eligendi maiores vel adipisci cumque harum nesciunt? Nobis magni facilis at, deleniti corrupti maiores perspiciatis error, officia architecto quia ducimus aut facere dicta inventore vero sunt tempore veniam itaque. Dignissimos numquam, minus, tenetur, laborum rerum repellendus veniam commodi officiis voluptatum laudantium sequi architecto repudiandae provident totam explicabo eveniet iste! Deleniti, ratione maxime quam amet fuga aliquid ipsa minus deserunt perferendis cupiditate. Impedit accusamus quisquam aut, adipisci nesciunt iure ullam temporibus est officiis? Asperiores quis exercitationem a labore, facere tempore consequuntur quo sed corporis veniam ipsam omnis totam nesciunt distinctio possimus odit nobis eveniet similique. Eaque quasi suscipit accusantium consequuntur provident dolores sunt perferendis odit deserunt sapiente consequatur nulla illum qui pariatur maxime similique error repellat blanditiis distinctio, assumenda, ab quod officiis incidunt? Reiciendis eaque quidem harum expedita cupiditate voluptate inventore magni aspernatur qui commodi magnam, molestias natus optio, cum earum ea? Quas modi id, commodi voluptatum ut enim doloribus quod laboriosam, incidunt quibusdam explicabo quam. Exercitationem beatae alias dolor ducimus velit consequatur molestiae odio similique aliquam deserunt, sed, magnam ullam! Pariatur esse eum, inventore corporis architecto fugit dicta iste ut illo corrupti voluptas quas sint autem est nostrum! Eius aperiam quia vitae quam atque ad illum, tempora magni hic accusantium dolores vel, repudiandae dolore obcaecati? Iusto ullam dolores dolor. Adipisci doloribus, reiciendis laudantium enim obcaecati provident, neque hic et aspernatur perspiciatis, amet sit. Hic quam, dolorum et error voluptates cumque corporis quae ea quas fuga eum ullam consectetur itaque dolorem rem voluptatem rerum eveniet architecto earum repellendus nobis possimus qui sit quod? Fugiat qui, voluptatibus ea eum, neque porro pariatur maiores ipsam tenetur debitis error facere est mollitia ratione ducimus ipsum molestias necessitatibus. Nemo soluta nulla sit odit praesentium ipsum adipisci delectus fugiat, odio deserunt quisquam autem esse reiciendis laboriosam maiores pariatur quod cumque quos iste saepe, sed ea. Consequuntur ea blanditiis nostrum, iusto et corrupti qui sit quo deleniti enim molestias dolor. Aspernatur dolores consequuntur explicabo unde fugit delectus deleniti, dicta esse quam ipsum. Natus perspiciatis porro voluptatum recusandae inventore repellendus ea quis maiores, minima expedita, quam eveniet deserunt minus? Nisi veniam aperiam consequuntur neque quam minus molestiae aliquid, quia autem. Porro, ratione expedita placeat ipsa hic ut necessitatibus facere minima modi itaque ipsum totam cum maiores iste quis repellat quod dolor tempora distinctio odio neque illo temporibus ipsam. Doloremque esse maiores repudiandae ratione aliquam sint explicabo laborum atque consequuntur! Totam eum aperiam, temporibus necessitatibus magni laboriosam! Voluptas quisquam earum molestiae maxime nobis, ducimus optio sunt facilis obcaecati quaerat est ad veritatis doloribus quo fugiat laudantium iure expedita, soluta hic numquam eos consequatur, error repellat dolores. Ut soluta dolorum tenetur nulla deserunt porro consequuntur illo quidem, laboriosam quia tempore fugiat temporibus distinctio non eum modi, labore reprehenderit. Dolore illo, tempora eaque neque quasi corrupti sed repellat? Vel neque tenetur, enim temporibus eius quam facere corporis qui laborum illo rem voluptatem cupiditate provident saepe, sit, expedita ratione dolor. Soluta iusto illo explicabo. Aut, incidunt itaque mollitia enim vel harum nostrum reprehenderit culpa corrupti reiciendis, dolore sit dolores. Porro reiciendis dolores molestiae quidem veritatis nobis magni asperiores aperiam similique fugiat veniam cumque, eius maiores animi dolorem expedita sit labore debitis nulla voluptatem ipsam? Cum, laborum! Voluptatum neque praesentium culpa quae magni tempore optio iure non exercitationem dolore reprehenderit quos eveniet aperiam dolorem id voluptate ex dolor iste nisi, alias a consequuntur voluptatibus perferendis. Veritatis temporibus perferendis molestiae eius ratione, obcaecati atque ducimus dignissimos magnam autem aliquid quos eligendi tenetur architecto cumque dolores dicta alias amet. Tempore, molestias quam! Eaque voluptates cum corporis maiores incidunt voluptatum!
-                            
-                                <!--  -->
-                            
-                            </v-col>
-                            </v-row>
-                            
-                            <!-- Кнопки -->
-                            v-row
-                            </v-container>
-
-
-
-            </div>
-
 
 
 
@@ -292,34 +231,62 @@
 
 
 
+<div class="result-container" v-if="testIsOverStatus">
+         
+    <v-container  v-if="testIsOverStatus"  class="result-content" >
+          
+        
+        
+        <!-- title , exit-button -->
+            <v-row no-gutters class="result-title" align="center">
 
+                <v-col class="">
+                    <h2> Тест   "{{ getResultOfWordsTest.selectedCategory.name}}" пройдено</h2>
+                </v-col>
+                <v-col class="col" cols="1" align="end">
+                <font-awesome-icon class="close-button"  icon="fa-xmark"/>
+                </v-col>
+            </v-row>
+        
 
-
-
-
-
-
-
-
-
-
-
-<!--  -->
-
-
-
-
-
-
-
-
-
-
-
-  
+        
      
-  
-  
+    
+        <!-- true & false counter -->
+            <v-row no-gutters>
+            <v-col>
+            
+                <v-icon class="p-4"  style="color: rgb(88, 170, 88); font-size: 18px" icon="mdi-thumb-up"></v-icon> 
+                <strong class="pa-2" style="color: green; font-size: 13px">{{ getResultOfWordsTest.trueAnswersCount }}</strong>  
+            </v-col>
+            <v-col>
+            
+                <v-icon class="" style="color: rgb(255, 0, 0); font-size: 18px" icon="mdi-thumb-down"></v-icon>
+                <strong class="pa-2" style="color: red; font-size: 13px">{{ getResultOfWordsTest.falseAnswersCount }}</strong>  
+            </v-col>
+            </v-row>
+            
+
+        <!-- false-answers-container -->
+       
+     <!-- <v-divider class="divider-1"></v-divider> -->
+            
+     
+     
+     <v-row  no-gutters class="false-answers-container">  
+<v-col>
+{{ getResultOfWordsTest.falseAnswersArr.map(el=>el.inEnglish)}}
+</v-col>   
+    </v-row>
+
+   
+        </v-container>
+
+
+</div>
+
+
+
 
 </template>
 
@@ -495,6 +462,10 @@ const startStopTest = () => {
     }
 }
 
+const closeResult = () => {
+    console.log('closeResudlt')
+}
+
 
 // коли тест закінчено
 watch( testIsOverStatus, (newValue)=>{
@@ -556,37 +527,89 @@ onMounted(()=>{
 cursor: pointer;
 }
 
-.container{
-    position: relative;
-    width: 100%;
-    height: 100%;
-  
-
-}
-
-.overlay{
+.result-container{
+    background-color: rgba(121, 117, 113, 0.5);
     position: fixed;
-    background-color: rgb(0, 0, 0);
-    opacity: 0.5;
-    width: 100%;
-    height: 100%;
     top: 0;
     left: 0;
-    z-index: 300;
-    overflow: hidden;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+   
+   
 }
 
-.overlay-content{
-    position: absolute;
-    overflow: hidden;
-    top: 20%;
-    left: 0;
-    background-color: rgb(255, 255, 255);
-    z-index: 301;
-    width: 90%;
-    //min-height: 20%;
-    margin: 0 5% 0 5%;
+.result-content{
+   background-color: rgb(228, 230, 235, 1);
+   width: 40%;
+   position: relative;
+   top: 20%;
+   height: 60%;
+   overflow: hidden;
+  
+} 
 
-
+.result-title{
+  
+    width: 100%;
 }
+
+ .close-button{
+    cursor: pointer;
+    font-size: 20px;
+        &:hover{
+                color: rgb(17, 16, 16);
+                transition: all .3s ease;
+        }
+   }
+.divider-1{
+    position: relative;
+    top: 70%;
+}
+
+
+
+//================================================================
+
+.false-answers-container {
+    border: 1px solid;
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+    height: 30%;
+    top: 45%;
+    font-size: 0.9rem;
+     overflow: auto;
+}
+
+
+
+
+
+
+
+
+//=====================================
+
+
+
+
+@media(max-width:920px){
+    .result-content{
+        width: 90%;  
+     } 
+     .false-answers-container{
+      
+      
+        
+   }
+}
+
+
+
+/* Скрыть полосу прокрутки */
+//.result-content::-webkit-scrollbar {
+ //   display: none;
+//} 
+
 </style>

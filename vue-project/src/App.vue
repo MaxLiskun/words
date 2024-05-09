@@ -100,6 +100,7 @@ $router-link-hover-background: rgb(179, 179, 187);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+
  
 }
 //header
@@ -193,6 +194,7 @@ width: 100%;
 height: 100%;
 flex: 1 1 100%;
 padding: 5px 5px;
+
 }
 
 }
