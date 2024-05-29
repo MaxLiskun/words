@@ -209,6 +209,13 @@ export default {
       state.trueAnswerArr = [];
       state.falseAnswerArr = [];
     },
+
+    resetTestIsOverStatus(state) {
+      state.testIsOverStatus = false;
+      console.log(state.testIsOverStatus)
+      
+    },
+    //resetTestIsOverStatus
 //================================================================
     makeWordsTestResult(state) {
       state.resultOfWordsTest = {
@@ -220,7 +227,8 @@ export default {
         falseAnswersCount: state.falseAnswerArr.length,
         falseAnswersArr: state.falseAnswerArr,
         trueAnswerArr: state.trueAnswerArr,
-        rating: state.testRating
+        rating: state.testRating,
+       
       };
 
       ;

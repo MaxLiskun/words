@@ -230,57 +230,81 @@
 </v-overlay> -->
 
 
-
-<div class="result-container" v-if="testIsOverStatus">
+<!-- overlay window -->
+<div class="result-container"  @click="handleClickOnResultWindow"  v-if="testIsOverStatus && showResultWindow">
          
-    <v-container  v-if="testIsOverStatus"  class="result-content" >
-          
-        
-        
-        <!-- title , exit-button -->
-            <v-row no-gutters class="result-title" align="center">
-
-                <v-col class="">
-                    <h2> Тест   "{{ getResultOfWordsTest.selectedCategory.name}}" пройдено</h2>
+        <v-container  v-if="testIsOverStatus"  class="result-content">
+            
+    <!-- exit-button -->
+    <v-row  no-gutters class="result-title" align="center">
+                <v-col  align="end">
+                <font-awesome-icon class="close-button" @click="closeResult"  icon="fa-xmark"/>
                 </v-col>
-                <v-col class="col" cols="1" align="end">
-                <font-awesome-icon class="close-button"  icon="fa-xmark"/>
-                </v-col>
-            </v-row>
-        
-
-        
-     
-    
-        <!-- true & false counter -->
-            <v-row no-gutters>
-            <v-col>
-            
-                <v-icon class="p-4"  style="color: rgb(88, 170, 88); font-size: 18px" icon="mdi-thumb-up"></v-icon> 
-                <strong class="pa-2" style="color: green; font-size: 13px">{{ getResultOfWordsTest.trueAnswersCount }}</strong>  
-            </v-col>
-            <v-col>
-            
-                <v-icon class="" style="color: rgb(255, 0, 0); font-size: 18px" icon="mdi-thumb-down"></v-icon>
-                <strong class="pa-2" style="color: red; font-size: 13px">{{ getResultOfWordsTest.falseAnswersCount }}</strong>  
-            </v-col>
-            </v-row>
-            
-
-        <!-- false-answers-container -->
-       
-     <!-- <v-divider class="divider-1"></v-divider> -->
-            
-     
-     
-     <v-row  no-gutters class="false-answers-container">  
-<v-col>
-{{ getResultOfWordsTest.falseAnswersArr.map(el=>el.inEnglish)}}
-</v-col>   
     </v-row>
 
-   
-        </v-container>
+    <!-- rating -->
+    <v-row>
+                <v-col   cols="5" xs="" sm="" md="" lg=""  xl="" align="right" ><v-rating
+                    half-increments
+                    readonly
+                    :length="5"
+                    :size="23"
+                    :model-value="getResultOfWordsTest.rating "
+                    color="grey"
+                    active-color="orange"
+                /></v-col>
+
+    </v-row>
+
+    <!-- category name -->
+    <v-row >
+                    <v-col class="text-body-2">
+                        {{ getResultOfWordsTest.selectedCategory.name}}
+                    </v-col>
+    </v-row>
+            
+            
+    <!-- true & false counter -->
+    <v-row no-gutters>
+                <v-col>
+                
+                    <v-icon class="p-4"  style="color: rgb(88, 170, 88); font-size: 18px" icon="mdi-thumb-up"></v-icon> 
+                    <strong class="pa-2" style="color: green; font-size: 13px">{{ getResultOfWordsTest.trueAnswersCount }}</strong>  
+                </v-col>
+                <v-col>
+                
+                    <v-icon class="" style="color: rgb(255, 0, 0); font-size: 18px" icon="mdi-thumb-down"></v-icon>
+                    <strong class="pa-2" style="color: red; font-size: 13px">{{ getResultOfWordsTest.falseAnswersCount }}</strong>  
+                </v-col>
+    </v-row>
+                
+    <!-- false-answers-->
+        
+    <v-row align="center" justify="center"  no-gutters class="false-answers-container mt-2">  
+            <v-col align="center" justify="center">
+            {{ getResultOfWordsTest.falseAnswersArr.map(el=>el.inEnglish)}}
+            </v-col>   
+    </v-row>
+
+
+    <!-- Date -->
+    <v-row>
+        <v-col> {{ getResultOfWordsTest.dateOfWordsTest }} </v-col>
+    </v-row>
+
+    <!-- Left time -->
+    <v-row>
+            <v-col>Виконано за {{ getResultOfWordsTest.leftTimeOfWordsTest}} </v-col>
+    </v-row>
+    
+    <!-- send result -->
+    <v-row>
+        <v-col>
+            <v-btn>send result</v-btn>
+        </v-col>
+    </v-row>
+
+            </v-container>
 
 
 </div>
@@ -302,7 +326,7 @@ import { playLongAudio } from '../store/modules/helpers';
 const store = useStore()
 
 
-const overlay = ref(true)
+
 
 //Для вибота типа теста en-uk uk-en
 
@@ -340,6 +364,7 @@ const startStopTestButton = ref(false)
 const testInProgress = computed(() => store.getters.getWordTestTestInProgress)
 const getCategories = computed(() => store.getters.stateCategories)
 const getWordsTestUserArrWords = computed(() => store.getters.getWordsTestUserArrWords)
+
 const getResultOfWordsTest = computed(() => store.getters.getResultOfWordsTest)
 
 
@@ -350,11 +375,12 @@ const getFalseAnswersArr = computed(()=> store.getters.getFalseAnswersArr)
 const testIsOverStatus = computed(() => store.getters.getTestIsOverStatus)
 
 
+const showResultWindow = ref(false)
 
 
 
 
-
+//================================================================
 const playData = ( async(answer, index)=>{
     
 
@@ -455,15 +481,28 @@ const startStopTest = () => {
           
         }else{
             //якщо все добре то погнали))))
+           
             store.dispatch('wordsTestGetWords') // підтягуєм слова
             store.commit('checkDateTimeOfTest', true)//старт відліку часу
+           
             //store.commit('clearWordTestResult')// для очистки минулого результату  якщо він є
         }
     }
 }
 
+
+//для закриття вікна з результатами(натиснути на кнопку)
 const closeResult = () => {
-    console.log('closeResudlt')
+  showResultWindow.value = false
+
+}
+
+//для закриття вікна з результатами(натиснути на область за кнопкою)
+const handleClickOnResultWindow = (event)=>{
+if (event.target.className === 'result-container'){
+    console.log('container clicked')
+    closeResult()
+}
 }
 
 
@@ -477,7 +516,8 @@ watch( testIsOverStatus, (newValue)=>{
          store.commit('clearWordsTestAllArrays') // очищаємо всі масиви в сторі і testProgress 
          clearData()//Ощищаемо все на клієнті
         startStopTestButton.value = !startStopTestButton.value  //міняємо кнопку
-        overlay.value = true // для показу результатів після тесту
+       
+        showResultWindow.value = true// для показу результатів після тесту
    }else{
       return
    }
@@ -540,19 +580,18 @@ cursor: pointer;
 }
 
 .result-content{
-   background-color: rgb(228, 230, 235, 1);
-   width: 40%;
+   background-color: rgb(254, 254, 255);
+   box-shadow: 0px 0px 35px rgb(77, 73, 73);
    position: relative;
-   top: 20%;
-   height: 60%;
-   overflow: hidden;
+   top: 10%;
+   height: 70%;
+   width: 50%;
+   overflow-y: scroll;
+   overflow-x: hidden;
   
 } 
 
-.result-title{
-  
-    width: 100%;
-}
+
 
  .close-button{
     cursor: pointer;
@@ -561,49 +600,44 @@ cursor: pointer;
                 color: rgb(17, 16, 16);
                 transition: all .3s ease;
         }
-   }
-.divider-1{
-    position: relative;
-    top: 70%;
 }
 
 
 
-//================================================================
 
 .false-answers-container {
-    border: 1px solid;
-    display: flex;
-    flex-wrap: wrap;
-    position: relative;
+    overflow: auto;
     height: 30%;
-    top: 45%;
-    font-size: 0.9rem;
-     overflow: auto;
+    box-shadow: 0px 0px 5px rgb(255, 0, 0, 0.5);;
+   // background-color: rgb(240, 235, 235);
 }
 
 
 
+//media
 
 
-
-
-
-//=====================================
-
-
-
-
-@media(max-width:920px){
+@media (max-width: 1024px){
     .result-content{
-        width: 90%;  
+        top: 10%;
+        height: 80%;
+        width: 80%;
+        font-size: 0.8rem;
      } 
-     .false-answers-container{
-      
-      
-        
-   }
+
+
 }
+
+@media (max-width: 720px){
+    .result-content{
+        top: 10%;
+        height: 80%;
+        width: 90%;
+        
+     } 
+}
+
+
 
 
 
