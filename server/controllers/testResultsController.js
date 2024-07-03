@@ -3,7 +3,7 @@ const WordTestResult = require("../models/Results");
 const Category = require("../models/Category");
 const Words = require("../models/Word");
 const { format } = require('date-fns');
-
+const transporter = require('../nodemailer');
 
 
 
@@ -15,6 +15,7 @@ const repeatCategory = 'Потрібно повторити' // назва ка�
 const addResult = async (req, res) => {
 
   const testResult = req.body.testResult;
+
 
 
   try {
@@ -134,12 +135,14 @@ const addResult = async (req, res) => {
               wordCount: testResult.selectedCategory.wordCount,
           },
             leftTimeOfWordsTest: testResult.leftTimeOfWordsTest,
+            testLangVariant:testResult.testLangVariant,
             trueAnswersCount: testResult.trueAnswersCount,
             falseAnswersCount: testResult.falseAnswersCount,
             falseAnswersArr: falseAnswersArr,
             resultId: testResult.userInfo.userId,
             timeOfWordsTest: format(new Date(), 'HH:mm:ss'), // Текущее время в формате xx-xx-xx
-            rating: testResult.rating
+            rating: testResult.rating,
+            ratingInPercent: testResult.ratingInPercent,
       });
 
 
@@ -150,6 +153,86 @@ const addResult = async (req, res) => {
       res.status(500).json({ title: "Помилка при збереженні результату" });
   }
 };
+
+//================================================================
+const sendResult = async (req, res) => {
+    
+try {
+  const testResult = req.body.testResult;
+
+
+  if (testResult){
+   
+   //Устанавливаем таймер на 30 секунд (30000 миллисекунд)
+    let timer = setTimeout(() => {
+    console.error('Timeout: Невдалося надіслати за 30 секунд');
+    return res.status(500).json({ message: 'Невдалося надіслати за 30 секунд' });
+  }, 30000);
+
+
+
+
+     const date = format(new Date(), 'dd-MM-yyyy');
+     const time = format(new Date(), 'HH:mm:ss');
+     const normalRating =  Math.round((testResult.rating/5)*100); // конвертуємо назад з 5 зіркового
+ 
+    const falseanswers = testResult.falseAnswersArr.map(el=>el.inEnglish);
+    
+
+
+                    const msg = {
+                      from: 'mywords996@gmail.com',
+                      to: testResult.userInfo.motherFatherEmail,
+                      subject: 'Результат тесту',
+                      
+                      text: 
+                      
+                      `${testResult.dateOfWordsTest}       ${time}  \n\n` +
+
+
+                      `Учень: ${testResult.userInfo.name} ${testResult.userInfo.lastName}\n\n` +
+                      
+                      `Категорія: ${testResult.selectedCategory.name}(${testResult.selectedCategory.wordCount})\n\n`+
+
+                      `Варіант тесту: ${testResult.testLangVariant}\n\n`+
+                   
+                      `Витрачений час: ${testResult.leftTimeOfWordsTest}\n\n`+
+
+
+                      `Правильних відповідей: ${testResult.trueAnswersCount}\n` +
+                      `Неправильних відповідей: ${testResult.falseAnswersCount}\n\n` +
+
+                      `Результат: ${normalRating}%\n\n`+
+                      
+                      `Потрібно повторити слова: ${falseanswers.join(',  ')}\n`
+                    };
+
+
+                      transporter.sendMail(msg, (err) =>{
+
+                            clearTimeout(timer); // очищаем таймер при успешной отправке
+
+                            if(err){
+                                console.error('Помилка в надісланні емейла:', err);
+                                return res.status(500).json({message:'Невдалося надіслати'})
+                            }else{
+                                console.log('Повідомлення надіслано успішно');
+                                res.status(200).json({message:'Повідомлення надіслано успішно'})
+                              }})
+
+  }else{
+    return res.status(400).json({message: 'Немає данних для надсилання'})
+  }
+  
+
+} catch (error) {
+    clearTimeout(timer); // очищаем таймер при ошибке
+    console.error('Невідома помилка надсилання:', error);
+    res.status(500).json({ message: 'Невідома помилка надсилання' });
+}
+    
+}
+//================================================================
 
 const getResults = async (req, res) => {
     try {
@@ -204,14 +287,12 @@ const getResults = async (req, res) => {
       res.status(500).json({ message: "Помилка при пошуку результатів" });
     }
   };
-
-
-
 module.exports = {
   addResult,
   getResults,
-  
+  sendResult,
 };
+
 
 
 

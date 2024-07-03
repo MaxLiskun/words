@@ -9,7 +9,7 @@ const testResultsController  = require('../controllers/testResultsController')
 
 router.post('/add-result', testResultsController.addResult)
 router.get('/get-results', testResultsController.getResults)
-
+router.post('/send-result', testResultsController.sendResult)
 
 
 

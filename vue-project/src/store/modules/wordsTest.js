@@ -16,7 +16,11 @@ export default {
 
     trueAnswerArr: [],
     falseAnswerArr: [],
-    testRating: null, // для рейтинга
+
+    testRating: null, // для 5 звезного рейтинга 
+    testRatingInPercent: null, // для простого рейтинга
+
+    testLangVariant: null,
 
     resultOfWordsTest: {},
 
@@ -27,6 +31,8 @@ export default {
 
     leftTimeOfWordsTest: "",
     dateOfWordsTest: "",
+
+    emailStatus: null,
   },
 
   actions: {
@@ -64,9 +70,62 @@ export default {
               return
             }
     },
+//================================================================
+    async sendUserResultToEmail(ctx){
+     try {
+      const token = await localStorage.getItem("token");
+      const testResult = ctx.state.resultOfWordsTest;
+      const response = await axios.post(
+        `${keys.host}/api/test-results/send-result`,
+
+         { testResult: testResult },
+
+          {
+            headers: {
+              token: token,
+              Authorization: `Bearer ${token}`,
+            },
+          }
+      );
+      
+  
+            if(response.status === 200) {
+                  console.log(response, 'Результат успішно надісланий')
+                  await ctx.commit('emailStatus', 'success')
+                  setTimeout(() =>  ctx.commit('emailStatus', null),1500)
+                  
+            }else{
+                 console.log(response, 'Помилка при надсиланні результату')
+                 await ctx.commit('emailStatus', 'fail')
+                 setTimeout(() =>  ctx.commit('emailStatus', null),1500)
+              return
+            }
+
+
+     } catch (error) {
+      console.log(error.response.data)
+      await ctx.commit('emailStatus', 'fail')
+      setTimeout(() =>  ctx.commit('emailStatus', null),1500)
+     }
+      
+     
+
+
+
+    }
+    //================================================================
   },
 
   mutations: {
+
+    //надати статус емейлу типу sending, fail, success. null
+    emailStatus(state, data){
+    state.emailStatus = data
+    console.log(data)
+    },
+
+
+
     makeWordsTestSelectedCategory(state, category) {
       state.wordsTestSelectedCategory = category;
       //console.log(state.wordsTestSelectedCategory);
@@ -187,6 +246,9 @@ export default {
       state.falseAnswerArr.push(question);
     },
 
+
+
+
     clearWordsTestMainArrWordsCopy(state) {
       state.mainArrWordsCopy = [];
     },
@@ -215,6 +277,11 @@ export default {
       console.log(state.testIsOverStatus)
       
     },
+
+    setTestLangVariant(state, data){ // для того щоб знати варіант тесту uk-en en-uk
+    state.testLangVariant = data
+    },
+
     //resetTestIsOverStatus
 //================================================================
     makeWordsTestResult(state) {
@@ -222,13 +289,14 @@ export default {
         dateOfWordsTest: state.dateOfWordsTest,
         userInfo: this.getters.userInfo,
         selectedCategory: state.wordsTestSelectedCategory,
+        testLangVariant: state.testLangVariant,
         leftTimeOfWordsTest: state.leftTimeOfWordsTest,
         trueAnswersCount: state.trueAnswerArr.length,
         falseAnswersCount: state.falseAnswerArr.length,
         falseAnswersArr: state.falseAnswerArr,
         trueAnswerArr: state.trueAnswerArr,
         rating: state.testRating,
-       
+        ratingInPercent: state.testRatingInPercent,
       };
 
       ;
@@ -244,13 +312,15 @@ export default {
     //rating
     calculateWordTestRating(state){
      const percentage = (state.trueAnswerArr.length / state.wordsTestSelectedCategory.wordCount) * 100;
-     state.testRating =  (percentage / 100) * 5;// 5-stars
+     state.testRatingInPercent = Math.round(percentage) // для простого рейтинга
+     state.testRating =  (percentage / 100) * 5;// для пятизвездочного рейтинга
+
     },
     clearWordTestRating(state){
     state.testRating = null
     }
 
-    //rating end
+    
   },
 
   getters: {
@@ -276,6 +346,10 @@ export default {
     getTestIsOverStatus(state) {
       return state.testIsOver
     },
+
+    getEmailStatus(state){
+      return state.emailStatus
+    }
   
   },
 };

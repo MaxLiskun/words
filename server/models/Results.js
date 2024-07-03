@@ -39,12 +39,14 @@ const wordSchema = new Schema({
     userInfo: userInfoSchema,
     selectedCategory: categorySchema,
     leftTimeOfWordsTest: String,
+    testLangVariant: String,
     trueAnswersCount: Number,
     falseAnswersCount: Number,
     falseAnswersArr: [wordSchema],
     resultId: String, // Отдельное поле для userId
     timeOfWordsTest: String,
     rating: Number,
+    ratingInPercent: Number,
   });
   
   const WordTestResult = mongoose.model("WordTestResult", resultSchema);

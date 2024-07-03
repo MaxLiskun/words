@@ -218,33 +218,31 @@
 </div>
 
 
-<!-- 
-                <v-overlay
- v-model="overlay"
- activator:parent
- class="align-center justify-center "
- contained
- location-strategy="connected"
- scroll-strategy="block"
->
-</v-overlay> -->
 
-
-<!-- overlay window -->
 <div class="result-container"  @click="handleClickOnResultWindow"  v-if="testIsOverStatus && showResultWindow">
          
         <v-container  v-if="testIsOverStatus"  class="result-content">
-            
-    <!-- exit-button -->
+           
+    <!-- exit-button, date-->
     <v-row  no-gutters class="result-title" align="center">
+
+    <!-- Date -->
+      
+    <v-col> <strong>{{ getResultOfWordsTest.dateOfWordsTest }}</strong> </v-col>
+
                 <v-col  align="end">
                 <font-awesome-icon class="close-button" @click="closeResult"  icon="fa-xmark"/>
                 </v-col>
     </v-row>
 
+    <v-divider
+    :thickness="1"
+    class="border-opacity-50 mt-4 mb-4"
+    color="black"
+  ></v-divider>
     <!-- rating -->
     <v-row>
-                <v-col   cols="5" xs="" sm="" md="" lg=""  xl="" align="right" ><v-rating
+                <v-col   cols="12" xs="" sm="" md="" lg=""  xl="" align="end" ><v-rating
                     half-increments
                     readonly
                     :length="5"
@@ -258,59 +256,124 @@
 
     <!-- category name -->
     <v-row >
-                    <v-col class="text-body-2">
-                        {{ getResultOfWordsTest.selectedCategory.name}}
+                    <v-col class="">
+                     <p>Категорія: 
+                       <strong>'{{ getResultOfWordsTest.selectedCategory.name}}'</strong> 
+                    </p>   
                     </v-col>
     </v-row>
             
+
+
+    <!-- word Counter -->
+
+    <v-row>
+        <v-col>
+            <p >Кількість слів в категорії <strong >{{ getResultOfWordsTest.selectedCategory.wordCount }}</strong> </p> 
+        </v-col>
+    </v-row>
             
-    <!-- true & false counter -->
+    <!-- true counter -->
     <v-row no-gutters>
                 <v-col>
-                
-                    <v-icon class="p-4"  style="color: rgb(88, 170, 88); font-size: 18px" icon="mdi-thumb-up"></v-icon> 
-                    <strong class="pa-2" style="color: green; font-size: 13px">{{ getResultOfWordsTest.trueAnswersCount }}</strong>  
+                <p >Правильних відповідей <strong>{{ getResultOfWordsTest.trueAnswersCount }}</strong> </p> 
                 </v-col>
-                <v-col>
-                
-                    <v-icon class="" style="color: rgb(255, 0, 0); font-size: 18px" icon="mdi-thumb-down"></v-icon>
-                    <strong class="pa-2" style="color: red; font-size: 13px">{{ getResultOfWordsTest.falseAnswersCount }}</strong>  
-                </v-col>
-    </v-row>
-                
-    <!-- false-answers-->
-        
-    <v-row align="center" justify="center"  no-gutters class="false-answers-container mt-2">  
-            <v-col align="center" justify="center">
-            {{ getResultOfWordsTest.falseAnswersArr.map(el=>el.inEnglish)}}
-            </v-col>   
+               
     </v-row>
 
 
-    <!-- Date -->
-    <v-row>
-        <v-col> {{ getResultOfWordsTest.dateOfWordsTest }} </v-col>
+      <!-- false counter -->
+      <v-row no-gutters>
+        <v-col>
+            <p >Неправильних відповідей <strong>{{ getResultOfWordsTest.falseAnswersCount }}</strong> </p> 
+        </v-col>
+     </v-row>
+
+
+    <!-- Result -->
+    <v-row no-gutters>
+        <v-col>
+            <p >Результат <strong>{{getResultOfWordsTest.ratingInPercent}}%</strong> </p> 
+        </v-col>
     </v-row>
+
+
+
 
     <!-- Left time -->
     <v-row>
-            <v-col>Виконано за {{ getResultOfWordsTest.leftTimeOfWordsTest}} </v-col>
+            <v-col>Виконано за <strong>{{ getResultOfWordsTest.leftTimeOfWordsTest}}</strong>  </v-col>
     </v-row>
-    
-    <!-- send result -->
-    <v-row>
-        <v-col>
-            <v-btn>send result</v-btn>
+
+    <v-divider 
+    :thickness="1"
+  class="border-opacity-50 mt-4 mb-4"
+    color="red"
+  ></v-divider>
+
+    <!-- false-answers-->
+    <v-row v-if="getResultOfWordsTest.falseAnswersArr.length"  align="center" justify="center"  no-gutters class="false-answers-container mt-2">  
+       
+        <v-col class="false-answers-container-title" cols=12 align="center" justify="center"><strong>Слова, які потрібно повторити</strong></v-col>
+            
+        <v-col  align="center" justify="center">
+            {{ getResultOfWordsTest.falseAnswersArr.map(el=>el.inEnglish)}}
+            </v-col>  
+
+    </v-row>
+
+  
+     <!-- send result -->
+     <v-row>
+        <v-col align="right">
+         
+       
+            <v-btn @click="sendUserResultToEmail" class="send-button">
+
+               <span class="pa-2"  v-if="emailStatus===null">Надіслати</span>
+               <span class="pa-2"  v-if="emailStatus==='sending'" >Надcилання</span>
+               <span class="pa-2"  v-if="emailStatus==='success'" >Надіслано</span>
+               <span class="pa-2"  v-if="emailStatus==='fail'" >Сталася помилка</span>
+             
+
+                     <v-progress-circular v-if="emailStatus==='sending'"  indeterminate class="ma-2" :size="20"></v-progress-circular>
+      
+                     <v-icon v-if="emailStatus==='success'"
+                        color="green"
+                        icon="mdi-check-circle"
+                        size="20"
+                    ></v-icon>
+
+                    <v-icon  v-if="emailStatus==='fail'"
+                    icon="mdi-cancel"
+                    end
+                    color="red"
+                  ></v-icon>
+
+                  <v-icon v-if="emailStatus===null"
+                  icon="mdi-share-variant"
+                  end
+                  color="black"
+                ></v-icon>
+                
+
+                </v-btn>
+            
+              
+                  
+                        
+
+
+                
+              
         </v-col>
     </v-row>
+  
 
             </v-container>
 
 
 </div>
-
-
-
 
 </template>
 
@@ -368,12 +431,14 @@ const getWordsTestUserArrWords = computed(() => store.getters.getWordsTestUserAr
 const getResultOfWordsTest = computed(() => store.getters.getResultOfWordsTest)
 
 
+
 const getTrueAnswersArr = computed(() => store.getters.getTrueAnswersArr)
 const getFalseAnswersArr = computed(()=> store.getters.getFalseAnswersArr) 
 
 
 const testIsOverStatus = computed(() => store.getters.getTestIsOverStatus)
 
+const emailStatus = computed(() => store.getters.getEmailStatus)
 
 const showResultWindow = ref(false)
 
@@ -484,7 +549,7 @@ const startStopTest = () => {
            
             store.dispatch('wordsTestGetWords') // підтягуєм слова
             store.commit('checkDateTimeOfTest', true)//старт відліку часу
-           
+            store.commit('setTestLangVariant', testLangVariant.value)// встановлюємо варіант тесту
             //store.commit('clearWordTestResult')// для очистки минулого результату  якщо він є
         }
     }
@@ -506,6 +571,20 @@ if (event.target.className === 'result-container'){
 }
 
 
+//================================================================
+//Надіслати результати
+const sendUserResultToEmail = ()=>{ //якщо емейл в даний момент невідсилається
+
+        if(emailStatus.value === null){
+            store.commit('emailStatus', 'sending') // даємо статус що надсилається
+            store.dispatch('sendUserResultToEmail')
+
+        }
+}
+
+
+
+//================================================================
 // коли тест закінчено
 watch( testIsOverStatus, (newValue)=>{
     //коли тест повністю закінчено
@@ -568,55 +647,53 @@ cursor: pointer;
 }
 
 .result-container{
-    background-color: rgba(121, 117, 113, 0.5);
+    background-color: rgba(94, 90, 86, 0.5);
     position: fixed;
     top: 0;
     left: 0;
     z-index: 999;
     width: 100%;
     height: 100%;
-   
-   
 }
 
 .result-content{
-   background-color: rgb(254, 254, 255);
-   box-shadow: 0px 0px 35px rgb(77, 73, 73);
+   background-color: rgb(238, 237, 229);
+   box-shadow: 0px 0px 15px rgb(250, 250, 250);
    position: relative;
    top: 10%;
    height: 70%;
    width: 50%;
-   overflow-y: scroll;
+   overflow-y: auto;
    overflow-x: hidden;
+   border-radius: 5px;
+  
   
 } 
 
-
-
  .close-button{
-    cursor: pointer;
-    font-size: 20px;
-        &:hover{
-                color: rgb(17, 16, 16);
-                transition: all .3s ease;
-        }
+cursor: pointer;
+font-size: 20px;
+    &:hover{
+    color: rgb(17, 16, 16);
+    transition: all .3s ease;
+    }
 }
-
-
-
-
 .false-answers-container {
     overflow: auto;
     height: 30%;
-    box-shadow: 0px 0px 5px rgb(255, 0, 0, 0.5);;
-   // background-color: rgb(240, 235, 235);
+    //border: .5px solid;
+    color: rgb(189, 8, 8);
+    border-radius: 5px;
+   background-color: rgba(238, 219, 219, 0.966);
+}
+.send-button{
+    background-color: rgb(251, 253, 251);
+    color: rgb(0, 0, 0);
+   
 }
 
 
-
 //media
-
-
 @media (max-width: 1024px){
     .result-content{
         top: 10%;
@@ -624,8 +701,6 @@ cursor: pointer;
         width: 80%;
         font-size: 0.8rem;
      } 
-
-
 }
 
 @media (max-width: 720px){
